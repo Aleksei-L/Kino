@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+	xmlns:app="http://schemas.android.com/apk/res-auto"
+	xmlns:tools="http://schemas.android.com/tools"
+	android:layout_width="match_parent"
+	android:layout_height="120dp"
+	android:padding="16dp">
+
+	<ImageView
+		android:id="@+id/poster"
+		android:layout_width="wrap_content"
+		android:layout_height="wrap_content"
+		app:layout_constraintStart_toStartOf="parent"
+		app:layout_constraintTop_toTopOf="parent"
+		tools:src="@drawable/ic_launcher_background" />
+
+	<TextView
+		android:id="@+id/title"
+		android:layout_width="wrap_content"
+		android:layout_height="wrap_content"
+		android:layout_marginStart="16dp"
+		app:layout_constraintStart_toEndOf="@id/poster"
+		app:layout_constraintTop_toTopOf="@id/poster"
+		tools:text="onsdfnsfos" />
+
+	<TextView
+		android:id="@+id/description"
+		android:layout_width="wrap_content"
+		android:layout_height="wrap_content"
+		android:layout_marginStart="16dp"
+		android:layout_marginTop="12dp"
+		app:layout_constraintStart_toEndOf="@id/poster"
+		app:layout_constraintTop_toBottomOf="@id/title"
+		tools:text="onsdfnsfos" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>
