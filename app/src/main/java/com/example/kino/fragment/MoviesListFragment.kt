@@ -12,6 +12,8 @@ import com.example.kino.adapter.MovieListAdapter
 import com.example.kino.data.Movie
 
 class MoviesListFragment : Fragment() {
+	private var rv: RecyclerView? = null
+
 	override fun onCreateView(
 		inflater: LayoutInflater, container: ViewGroup?,
 		savedInstanceState: Bundle?
@@ -21,9 +23,13 @@ class MoviesListFragment : Fragment() {
 
 	override fun onStart() {
 		super.onStart()
-		val recyclerView = view?.findViewById<RecyclerView>(R.id.movie_list)
+		rv = view?.findViewById(R.id.movie_list)
 
-		recyclerView?.layoutManager = LinearLayoutManager(view?.context)
-		recyclerView?.adapter = MovieListAdapter(Movie.getFakeMovies())
+		rv?.layoutManager = LinearLayoutManager(view?.context)
+		rv?.adapter = MovieListAdapter()
+	}
+
+	fun setMovieData(moviesList: List<Movie>) {
+		(rv?.adapter as MovieListAdapter).setMoviesList(moviesList)
 	}
 }
