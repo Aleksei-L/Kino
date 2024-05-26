@@ -1,6 +1,7 @@
 plugins {
 	alias(libs.plugins.androidApplication)
 	alias(libs.plugins.jetbrainsKotlinAndroid)
+	id("com.google.devtools.ksp")
 }
 
 android {
@@ -36,6 +37,8 @@ android {
 }
 
 dependencies {
+	ksp("com.squareup.moshi:moshi-kotlin-codegen:1.14.0")
+	implementation(libs.moshi)
 	implementation(libs.androidx.lifecycle.viewmodel.ktx)
 	implementation(libs.okhttp)
 	implementation(libs.androidx.core.ktx)

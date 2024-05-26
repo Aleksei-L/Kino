@@ -29,7 +29,7 @@ class MoviesListFragment : Fragment() {
 		rv?.adapter = MovieListAdapter()
 	}
 
-	fun setMovieData(moviesList: List<Movie>) {
+	fun setMovieData(moviesList: List<Movie?>) {
 		(rv?.adapter as MovieListAdapter).setMoviesList(moviesList)
 	}
 }
