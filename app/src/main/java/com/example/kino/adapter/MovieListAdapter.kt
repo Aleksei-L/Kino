@@ -8,6 +8,7 @@ import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.example.kino.R
 import com.example.kino.data.Movie
+import com.squareup.picasso.Picasso
 
 class MovieListAdapter :
 	RecyclerView.Adapter<MovieListAdapter.MovieListViewHolder>() {
@@ -26,7 +27,10 @@ class MovieListAdapter :
 		holder.about.text =
 			(movie?.genres?.get(0)?.toString() ?: "") + " (" + (movie?.year
 				?: "") + ")" //TODO переделать на ресурсы
-		holder.poster.setImageResource(R.drawable.ic_launcher_background) //TODO загружать из сети
+		Picasso.get()
+			.load(movie?.posterUrlPreview)
+			.placeholder(R.drawable.image_placeholder)
+			.into(holder.poster)
 	}
 
 	override fun getItemCount(): Int = moviesList?.size ?: 0

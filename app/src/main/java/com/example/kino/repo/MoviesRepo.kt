@@ -1,6 +1,5 @@
 package com.example.kino.repo
 
-import android.util.Log
 import kotlinx.coroutines.delay
 import okhttp3.Call
 import okhttp3.Callback
@@ -51,7 +50,6 @@ class MoviesRepo(private val httpClient: OkHttpClient /* TODO DI */) {
 						throw IOException("Unexpected code $response")
 
 					data = response.body!!.string()
-					Log.d("MAIN", data)
 				}
 			}
 		})

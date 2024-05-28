@@ -37,7 +37,8 @@ android {
 }
 
 dependencies {
-	ksp("com.squareup.moshi:moshi-kotlin-codegen:1.14.0")
+	implementation(libs.picasso)
+	ksp(libs.moshi.ksp)
 	implementation(libs.moshi)
 	implementation(libs.androidx.lifecycle.viewmodel.ktx)
 	implementation(libs.okhttp)

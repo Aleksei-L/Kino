@@ -36,6 +36,6 @@ class MainActivity : AppCompatActivity() {
 	override fun onStart() {
 		super.onStart()
 
-		vm.getMovieById(300)
+		vm.getTopMovies()
 	}
 }
