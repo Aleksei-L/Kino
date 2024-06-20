@@ -10,7 +10,7 @@ import com.example.kino.R
 import com.example.kino.data.Movie
 import com.squareup.picasso.Picasso
 
-class MovieListAdapter :
+class MovieListAdapter(private val listener: OnClickItemListener) :
 	RecyclerView.Adapter<MovieListAdapter.MovieListViewHolder>() {
 	private var moviesList: List<Movie?>? = null
 
@@ -25,19 +25,29 @@ class MovieListAdapter :
 
 		holder.title.text = movie?.nameRu ?: movie?.nameEn ?: movie?.nameOriginal ?: ""
 		holder.about.text =
-			(movie?.genres?.get(0)?.toString() ?: "") + " (" + (movie?.year
+			(movie?.genres?.get(0)?.toCapitalize() ?: "") + " (" + (movie?.year
 				?: "") + ")" //TODO переделать на ресурсы
 		Picasso.get()
 			.load(movie?.posterUrlPreview)
 			.placeholder(R.drawable.image_placeholder)
 			.into(holder.poster)
+
+		holder.itemView.setOnClickListener {
+			listener.onItemClick(movie, position)
+		}
 	}
 
 	override fun getItemCount(): Int = moviesList?.size ?: 0
 
-	fun setMoviesList(movies: List<Movie?>) {
+	fun setMoviesList(movies: List<Movie?>?) {
 		moviesList = movies
 		notifyDataSetChanged()
+	}
+
+	fun getMovieId(position: Int): Int = moviesList?.get(position)?.kinopoiskId ?: 300 //TODO WHY
+
+	interface OnClickItemListener {
+		fun onItemClick(item: Movie?, position: Int)
 	}
 
 	inner class MovieListViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {

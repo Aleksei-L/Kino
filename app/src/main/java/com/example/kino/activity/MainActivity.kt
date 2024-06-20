@@ -2,6 +2,7 @@ package com.example.kino.activity
 
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.widget.Toolbar
 import androidx.lifecycle.ViewModelProvider
 import com.example.kino.MyApp
 import com.example.kino.R
@@ -16,6 +17,9 @@ class MainActivity : AppCompatActivity() {
 	override fun onCreate(savedInstanceState: Bundle?) {
 		super.onCreate(savedInstanceState)
 		setContentView(R.layout.activity_main)
+
+		val toolbar = findViewById<Toolbar>(R.id.toolbar)
+		setSupportActionBar(toolbar)
 
 		val app = application as MyApp
 		val repo = MoviesRepo(app.data)
@@ -37,5 +41,9 @@ class MainActivity : AppCompatActivity() {
 		super.onStart()
 
 		vm.getTopMovies()
+	}
+
+	companion object {
+		const val MOVIE_ID_EXTRA = "movie_id"
 	}
 }

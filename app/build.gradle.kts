@@ -37,6 +37,7 @@ android {
 }
 
 dependencies {
+	implementation(libs.androidx.paging.runtime)
 	implementation(libs.picasso)
 	ksp(libs.moshi.ksp)
 	implementation(libs.moshi)

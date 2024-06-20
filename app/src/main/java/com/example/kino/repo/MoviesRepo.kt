@@ -11,7 +11,7 @@ import java.io.IOException
 class MoviesRepo(private val httpClient: OkHttpClient /* TODO DI */) {
 	private val apiKey = "e30ffed0-76ab-4dd6-b41f-4c9da2b2735b"
 
-	suspend fun getMovieDataById(id: Int = 300): String {
+	suspend fun getMovieDataById(id: Int): String {
 		var data = "NO_DATA"
 		val request = Request.Builder()
 			.addHeader("X-API-KEY", apiKey)
@@ -30,15 +30,15 @@ class MoviesRepo(private val httpClient: OkHttpClient /* TODO DI */) {
 				}
 			}
 		})
-		delay(500) //TODO и как это убрать
+		delay(700) //TODO и как это убрать
 		return data
 	}
 
-	suspend fun getTopMovies(): String {
+	suspend fun getTopMovies(page: Int): String {
 		var data = "NO_DATA"
 		val request = Request.Builder()
 			.addHeader("X-API-KEY", apiKey)
-			.url("https://kinopoiskapiunofficial.tech/api/v2.2/films/collections?type=TOP_POPULAR_ALL&page=1")
+			.url("https://kinopoiskapiunofficial.tech/api/v2.2/films/collections?type=TOP_POPULAR_ALL&page=$page")
 			.build()
 
 		httpClient.newCall(request).enqueue(object : Callback {
@@ -53,7 +53,7 @@ class MoviesRepo(private val httpClient: OkHttpClient /* TODO DI */) {
 				}
 			}
 		})
-		delay(500) //TODO и как это убрать
+		delay(700) //TODO и как это убрать
 		return data
 	}
 }

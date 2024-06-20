@@ -7,7 +7,9 @@ import java.util.Locale
 data class Genre(
 	val genre: String
 ) {
-	override fun toString(): String = genre.replaceFirstChar {
+	override fun toString(): String = genre
+
+	fun toCapitalize(): String = genre.replaceFirstChar {
 		if (it.isLowerCase())
 			it.titlecase(Locale.getDefault())
 		else

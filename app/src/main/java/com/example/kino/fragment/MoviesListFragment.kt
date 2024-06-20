@@ -1,5 +1,6 @@
 package com.example.kino.fragment
 
+import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -8,6 +9,8 @@ import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.kino.R
+import com.example.kino.activity.MainActivity
+import com.example.kino.activity.MovieDetailActivity
 import com.example.kino.adapter.MovieListAdapter
 import com.example.kino.data.Movie
 
@@ -26,10 +29,19 @@ class MoviesListFragment : Fragment() {
 		rv = view?.findViewById(R.id.movie_list)
 
 		rv?.layoutManager = LinearLayoutManager(view?.context)
-		rv?.adapter = MovieListAdapter()
+		rv?.adapter = MovieListAdapter(object : MovieListAdapter.OnClickItemListener {
+			override fun onItemClick(item: Movie?, position: Int) {
+				val myIntent = Intent(view?.context, MovieDetailActivity::class.java)
+				myIntent.putExtra(
+					MainActivity.MOVIE_ID_EXTRA,
+					(rv?.adapter as? MovieListAdapter)?.getMovieId(position)
+				)
+				startActivity(myIntent)
+			}
+		})
 	}
 
-	fun setMovieData(moviesList: List<Movie?>) {
+	fun setMovieData(moviesList: List<Movie?>?) {
 		(rv?.adapter as MovieListAdapter).setMoviesList(moviesList)
 	}
 }

@@ -4,22 +4,21 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.kino.data.Movie
-import com.example.kino.data.MovieSet
 import com.example.kino.repo.MoviesRepo
 import com.squareup.moshi.Moshi
 import kotlinx.coroutines.cancel
 import kotlinx.coroutines.launch
 
-class MoviesListViewModel(private val repo: MoviesRepo) : ViewModel() {
-	private val prData = MutableLiveData<List<Movie?>?>()
+class MovieDetailViewModel(private val repo: MoviesRepo) : ViewModel() {
+	private val prData = MutableLiveData<Movie?>()
 	private val moshi = Moshi.Builder().build()
 	val data = prData
 
-	fun getTopMovies() = viewModelScope.launch {
-		val json = repo.getTopMovies(1)
-		val jsonAdapter = moshi.adapter(MovieSet::class.java)
-		val movies = jsonAdapter.fromJson(json)
-		prData.postValue(movies?.items)
+	fun getMovieById(id: Int) = viewModelScope.launch {
+		val json = repo.getMovieDataById(id)
+		val jsonAdapter = moshi.adapter(Movie::class.java)
+		val movie = jsonAdapter.fromJson(json)
+		prData.postValue(movie)
 	}
 
 	override fun onCleared() {
