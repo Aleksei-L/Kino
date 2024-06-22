@@ -6,8 +6,10 @@ import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
 import androidx.lifecycle.ViewModelProvider
-import com.example.kino.MyApp
 import com.example.kino.R
+import com.example.kino.data.Resource
+import com.example.kino.repo.APIInstance
+import com.example.kino.repo.MovieAPI
 import com.example.kino.repo.MoviesRepo
 import com.example.kino.viewmodel.MovieDetailViewModel
 import com.example.kino.viewmodel.MovieDetailViewModelFactory
@@ -27,14 +29,11 @@ class MovieDetailActivity : AppCompatActivity() {
 			onBackPressedDispatcher.onBackPressed()
 		}
 
-		val app = application as MyApp
-		val repo = MoviesRepo(app.data)
-
 		val movieId = intent.getIntExtra(MainActivity.MOVIE_ID_EXTRA, 300) //TODO WHY
 
 		vm = ViewModelProvider(
 			this,
-			MovieDetailViewModelFactory(repo)
+			MovieDetailViewModelFactory(MoviesRepo(MovieAPI(APIInstance.httpClient)))
 		)[MovieDetailViewModel::class.java]
 
 		val poster = findViewById<ImageView>(R.id.poster)
@@ -44,18 +43,27 @@ class MovieDetailActivity : AppCompatActivity() {
 		val genresList = findViewById<TextView>(R.id.genres_list)
 
 		vm.data.observe(this) {
-			Picasso.get()
-				.load(it?.posterUrl)
-				.placeholder(R.drawable.image_placeholder)
-				.into(poster)
-			title.text = it?.nameRu ?: it?.nameEn ?: it?.nameOriginal
-			supportActionBar?.title = it?.nameRu ?: it?.nameEn ?: it?.nameOriginal
-			desc.text = it?.description
-			genres.text = resources.getText(R.string.genres)
-			var genresStr = ""
-			for (i in it?.genres ?: 0..1)
-				genresStr += "$i, "
-			genresList.text = genresStr.substring(0..genresStr.length - 3)
+			when (it) {
+				is Resource.Success -> {
+					//hideProgressBar
+					Picasso.get()
+						.load(it.data?.posterUrl)
+						.placeholder(R.drawable.image_placeholder)
+						.into(poster)
+					title.text = it.data?.nameRu ?: it.data?.nameEn ?: it.data?.nameOriginal
+					supportActionBar?.title =
+						it.data?.nameRu ?: it.data?.nameEn ?: it.data?.nameOriginal
+					desc.text = it.data?.description
+					genres.text = resources.getText(R.string.genres)
+					var genresStr = ""
+
+					for (i in it.data?.genres ?: 0..1)
+						genresStr += "$i, "
+					genresList.text = genresStr.substring(0..genresStr.length - 3)
+				}
+
+				else -> println() //TODO дописать
+			}
 		}
 
 		vm.getMovieById(movieId)

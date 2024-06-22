@@ -4,9 +4,10 @@ import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
 import androidx.lifecycle.ViewModelProvider
-import com.example.kino.MyApp
 import com.example.kino.R
 import com.example.kino.fragment.MoviesListFragment
+import com.example.kino.repo.APIInstance
+import com.example.kino.repo.MovieAPI
 import com.example.kino.repo.MoviesRepo
 import com.example.kino.viewmodel.MoviesListViewModel
 import com.example.kino.viewmodel.MoviesListViewModelFactory
@@ -21,12 +22,9 @@ class MainActivity : AppCompatActivity() {
 		val toolbar = findViewById<Toolbar>(R.id.toolbar)
 		setSupportActionBar(toolbar)
 
-		val app = application as MyApp
-		val repo = MoviesRepo(app.data)
-
 		vm = ViewModelProvider(
 			this,
-			MoviesListViewModelFactory(repo)
+			MoviesListViewModelFactory(MoviesRepo(MovieAPI(APIInstance.httpClient)))
 		)[MoviesListViewModel::class.java]
 
 		val frag =
@@ -40,7 +38,7 @@ class MainActivity : AppCompatActivity() {
 	override fun onStart() {
 		super.onStart()
 
-		vm.getTopMovies()
+		vm.getTopMovies(1)
 	}
 
 	companion object {

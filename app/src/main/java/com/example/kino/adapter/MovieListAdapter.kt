@@ -5,23 +5,35 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
+import androidx.recyclerview.widget.AsyncListDiffer
+import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.example.kino.R
 import com.example.kino.data.Movie
 import com.squareup.picasso.Picasso
 
-class MovieListAdapter(private val listener: OnClickItemListener) :
-	RecyclerView.Adapter<MovieListAdapter.MovieListViewHolder>() {
-	private var moviesList: List<Movie?>? = null
+class MovieListAdapter : RecyclerView.Adapter<MovieListAdapter.MovieListViewHolder>() {
+	private var onItemClickListener: ((Movie) -> Unit)? = null
+	private val differCallback = object : DiffUtil.ItemCallback<Movie>() {
+		override fun areItemsTheSame(oldItem: Movie, newItem: Movie) =
+			oldItem.kinopoiskId == newItem.kinopoiskId
 
-	override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MovieListViewHolder {
-		val itemView =
-			LayoutInflater.from(parent.context).inflate(R.layout.movie_list_item, parent, false)
-		return MovieListViewHolder(itemView)
+		override fun areContentsTheSame(oldItem: Movie, newItem: Movie) =
+			oldItem == newItem
 	}
+	val differ = AsyncListDiffer(this, differCallback)
+
+	override fun onCreateViewHolder(parent: ViewGroup, viewType: Int) =
+		MovieListViewHolder(
+			LayoutInflater.from(parent.context).inflate(
+				R.layout.movie_list_item,
+				parent,
+				false
+			)
+		)
 
 	override fun onBindViewHolder(holder: MovieListViewHolder, position: Int) {
-		val movie = moviesList?.get(position)
+		val movie = differ.currentList[position]
 
 		holder.title.text = movie?.nameRu ?: movie?.nameEn ?: movie?.nameOriginal ?: ""
 		holder.about.text =
@@ -33,21 +45,16 @@ class MovieListAdapter(private val listener: OnClickItemListener) :
 			.into(holder.poster)
 
 		holder.itemView.setOnClickListener {
-			listener.onItemClick(movie, position)
+			onItemClickListener?.let { it(movie) }
 		}
 	}
 
-	override fun getItemCount(): Int = moviesList?.size ?: 0
+	override fun getItemCount(): Int = differ.currentList.size
 
-	fun setMoviesList(movies: List<Movie?>?) {
-		moviesList = movies
-		notifyDataSetChanged()
-	}
+	//fun getMovieId(position: Int): Int = /*moviesList*/differ.currentList[position]?.kinopoiskId ?: 300
 
-	fun getMovieId(position: Int): Int = moviesList?.get(position)?.kinopoiskId ?: 300 //TODO WHY
-
-	interface OnClickItemListener {
-		fun onItemClick(item: Movie?, position: Int)
+	fun setOnItemClickListener(listener: ((Movie) -> Unit)) {
+		onItemClickListener = listener
 	}
 
 	inner class MovieListViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {

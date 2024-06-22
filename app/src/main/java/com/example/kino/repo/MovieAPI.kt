@@ -1,0 +1,53 @@
+package com.example.kino.repo
+
+import com.example.kino.data.Movie
+import com.example.kino.data.MovieSet
+import com.example.kino.data.Resource
+import com.squareup.moshi.Moshi
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
+import okhttp3.OkHttpClient
+import okhttp3.Request
+
+class MovieAPI(private val httpClient: OkHttpClient /* TODO DI */) {
+	private val apiKey = "e30ffed0-76ab-4dd6-b41f-4c9da2b2735b"
+	private val moshi = Moshi.Builder().build()
+
+	suspend fun getMovieById(id: Int): Resource<Movie> = withContext(Dispatchers.IO) {
+		val request = Request.Builder()
+			.addHeader("X-API-KEY", apiKey)
+			.url("https://kinopoiskapiunofficial.tech/api/v2.2/films/$id")
+			.build()
+
+		httpClient.newCall(request).execute().use { response ->
+			if (!response.isSuccessful) {
+				return@withContext Resource.Error(response.message)
+			}
+
+			val json = response.body?.string()
+			val jsonAdapter = moshi.adapter(Movie::class.java)
+			val movie = json?.let { jsonAdapter.fromJson(it) }
+
+			return@withContext Resource.Success(movie!!)
+		}
+	}
+
+	suspend fun getTopMovies(page: Int): Resource<MovieSet> = withContext(Dispatchers.IO) {
+		val request = Request.Builder()
+			.addHeader("X-API-KEY", apiKey)
+			.url("https://kinopoiskapiunofficial.tech/api/v2.2/films/collections?type=TOP_POPULAR_ALL&page=$page")
+			.build()
+
+		httpClient.newCall(request).execute().use { response ->
+			if (!response.isSuccessful) {
+				return@withContext Resource.Error(response.message)
+			}
+
+			val json = response.body?.string()
+			val jsonAdapter = moshi.adapter(MovieSet::class.java)
+			val movies = jsonAdapter.fromJson(json!!)
+
+			return@withContext Resource.Success(movies!!)
+		}
+	}
+}
