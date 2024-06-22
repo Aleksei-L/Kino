@@ -1,4 +1,4 @@
-package com.example.kino.data
+package com.example.kino.util
 
 sealed class Resource<T>(
 	val data: T? = null,

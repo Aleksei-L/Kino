@@ -6,9 +6,9 @@ import androidx.appcompat.widget.Toolbar
 import androidx.lifecycle.ViewModelProvider
 import com.example.kino.R
 import com.example.kino.fragment.MoviesListFragment
-import com.example.kino.repo.APIInstance
 import com.example.kino.repo.MovieAPI
 import com.example.kino.repo.MoviesRepo
+import com.example.kino.util.APIInstance
 import com.example.kino.viewmodel.MoviesListViewModel
 import com.example.kino.viewmodel.MoviesListViewModelFactory
 

@@ -13,7 +13,7 @@ import com.example.kino.activity.MainActivity
 import com.example.kino.activity.MovieDetailActivity
 import com.example.kino.adapter.MovieListAdapter
 import com.example.kino.data.MovieSet
-import com.example.kino.data.Resource
+import com.example.kino.util.Resource
 
 class MoviesListFragment : Fragment() {
 	private var rv: RecyclerView? = null

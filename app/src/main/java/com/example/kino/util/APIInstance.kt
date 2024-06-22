@@ -1,4 +1,4 @@
-package com.example.kino.repo
+package com.example.kino.util
 
 import okhttp3.OkHttpClient
 

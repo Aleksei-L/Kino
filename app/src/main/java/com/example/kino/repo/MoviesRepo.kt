@@ -2,7 +2,7 @@ package com.example.kino.repo
 
 import com.example.kino.data.Movie
 import com.example.kino.data.MovieSet
-import com.example.kino.data.Resource
+import com.example.kino.util.Resource
 
 class MoviesRepo(private val movieAPI: MovieAPI /*TODO DI*/) {
 	suspend fun getMovieById(id: Int): Resource<Movie> {

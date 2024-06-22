@@ -4,8 +4,8 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.kino.data.MovieSet
-import com.example.kino.data.Resource
 import com.example.kino.repo.MoviesRepo
+import com.example.kino.util.Resource
 import kotlinx.coroutines.cancel
 import kotlinx.coroutines.launch
 

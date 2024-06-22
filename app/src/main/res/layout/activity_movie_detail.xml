@@ -13,13 +13,23 @@
 		app:layout_constraintStart_toStartOf="parent"
 		app:layout_constraintTop_toTopOf="parent" />
 
+	<com.google.android.material.progressindicator.LinearProgressIndicator
+		android:id="@+id/progress_bar"
+		style="?attr/progressBarStyle"
+		android:layout_width="wrap_content"
+		android:layout_height="wrap_content"
+		android:indeterminate="true"
+		android:visibility="invisible"
+		app:layout_constraintStart_toStartOf="parent"
+		app:layout_constraintTop_toBottomOf="@id/toolbar" />
+
 	<ImageView
 		android:id="@+id/poster"
 		android:layout_width="match_parent"
 		android:layout_height="400dp"
 		android:contentDescription="@string/film_cover_description"
 		app:layout_constraintStart_toStartOf="parent"
-		app:layout_constraintTop_toBottomOf="@id/toolbar"
+		app:layout_constraintTop_toBottomOf="@id/progress_bar"
 		tools:src="@drawable/image_placeholder" />
 
 	<TextView

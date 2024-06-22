@@ -2,7 +2,7 @@ package com.example.kino.repo
 
 import com.example.kino.data.Movie
 import com.example.kino.data.MovieSet
-import com.example.kino.data.Resource
+import com.example.kino.util.Resource
 import com.squareup.moshi.Moshi
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
@@ -18,17 +18,20 @@ class MovieAPI(private val httpClient: OkHttpClient /* TODO DI */) {
 			.addHeader("X-API-KEY", apiKey)
 			.url("https://kinopoiskapiunofficial.tech/api/v2.2/films/$id")
 			.build()
+		try {
+			httpClient.newCall(request).execute().use { response ->
+				if (!response.isSuccessful) {
+					return@withContext Resource.Error(response.message)
+				}
 
-		httpClient.newCall(request).execute().use { response ->
-			if (!response.isSuccessful) {
-				return@withContext Resource.Error(response.message)
+				val json = response.body?.string()
+				val jsonAdapter = moshi.adapter(Movie::class.java)
+				val movie = json?.let { jsonAdapter.fromJson(it) }
+
+				return@withContext Resource.Success(movie!!)
 			}
-
-			val json = response.body?.string()
-			val jsonAdapter = moshi.adapter(Movie::class.java)
-			val movie = json?.let { jsonAdapter.fromJson(it) }
-
-			return@withContext Resource.Success(movie!!)
+		} catch (e: Exception) {
+			return@withContext Resource.Error("Network error")
 		}
 	}
 
@@ -37,17 +40,20 @@ class MovieAPI(private val httpClient: OkHttpClient /* TODO DI */) {
 			.addHeader("X-API-KEY", apiKey)
 			.url("https://kinopoiskapiunofficial.tech/api/v2.2/films/collections?type=TOP_POPULAR_ALL&page=$page")
 			.build()
+		try {
+			httpClient.newCall(request).execute().use { response ->
+				if (!response.isSuccessful) {
+					return@withContext Resource.Error(response.message)
+				}
 
-		httpClient.newCall(request).execute().use { response ->
-			if (!response.isSuccessful) {
-				return@withContext Resource.Error(response.message)
+				val json = response.body?.string()
+				val jsonAdapter = moshi.adapter(MovieSet::class.java)
+				val movies = jsonAdapter.fromJson(json!!)
+
+				return@withContext Resource.Success(movies!!)
 			}
-
-			val json = response.body?.string()
-			val jsonAdapter = moshi.adapter(MovieSet::class.java)
-			val movies = jsonAdapter.fromJson(json!!)
-
-			return@withContext Resource.Success(movies!!)
+		} catch (e: Exception) {
+			return@withContext Resource.Error("Network error")
 		}
 	}
 }
