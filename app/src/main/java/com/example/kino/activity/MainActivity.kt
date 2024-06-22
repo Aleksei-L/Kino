@@ -2,25 +2,29 @@ package com.example.kino.activity
 
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
-import androidx.appcompat.widget.Toolbar
 import androidx.lifecycle.ViewModelProvider
 import com.example.kino.R
+import com.example.kino.databinding.ActivityMainBinding
 import com.example.kino.fragment.MoviesListFragment
 import com.example.kino.repo.MovieAPI
 import com.example.kino.repo.MoviesRepo
 import com.example.kino.util.APIInstance
+import com.example.kino.util.ProgressBar
+import com.example.kino.util.Resource
 import com.example.kino.viewmodel.MoviesListViewModel
 import com.example.kino.viewmodel.MoviesListViewModelFactory
+import com.google.android.material.snackbar.Snackbar
 
-class MainActivity : AppCompatActivity() {
+class MainActivity : AppCompatActivity(), ProgressBar {
+	private lateinit var binding: ActivityMainBinding
 	private lateinit var vm: MoviesListViewModel
 
 	override fun onCreate(savedInstanceState: Bundle?) {
 		super.onCreate(savedInstanceState)
-		setContentView(R.layout.activity_main)
+		binding = ActivityMainBinding.inflate(layoutInflater)
+		setContentView(binding.root)
 
-		val toolbar = findViewById<Toolbar>(R.id.toolbar)
-		setSupportActionBar(toolbar)
+		setSupportActionBar(binding.toolbar.root)
 
 		vm = ViewModelProvider(
 			this,
@@ -30,8 +34,24 @@ class MainActivity : AppCompatActivity() {
 		val frag =
 			supportFragmentManager.findFragmentById(R.id.movies_list_fragment) as MoviesListFragment
 
-		vm.data.observe(this) {
-			frag.setMovieData(it)
+		vm.data.observe(this) { resource ->
+			when (resource) {
+				is Resource.Success -> {
+					hideProgressBar(binding.progressBar)
+					frag.setMovieData(resource)
+				}
+
+				is Resource.Error -> {
+					hideProgressBar(binding.progressBar)
+					Snackbar.make(
+						binding.root,
+						resource.message ?: getString(R.string.error),
+						Snackbar.LENGTH_SHORT
+					).show()
+				}
+
+				is Resource.Loading -> showProgressBar(binding.progressBar)
+			}
 		}
 	}
 

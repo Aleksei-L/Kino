@@ -1,7 +1,6 @@
 package com.example.kino.activity
 
 import android.os.Bundle
-import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.ViewModelProvider
 import com.example.kino.R
@@ -9,13 +8,14 @@ import com.example.kino.databinding.ActivityMovieDetailBinding
 import com.example.kino.repo.MovieAPI
 import com.example.kino.repo.MoviesRepo
 import com.example.kino.util.APIInstance
+import com.example.kino.util.ProgressBar
 import com.example.kino.util.Resource
 import com.example.kino.viewmodel.MovieDetailViewModel
 import com.example.kino.viewmodel.MovieDetailViewModelFactory
 import com.google.android.material.snackbar.Snackbar
 import com.squareup.picasso.Picasso
 
-class MovieDetailActivity : AppCompatActivity() {
+class MovieDetailActivity : AppCompatActivity(), ProgressBar {
 	private lateinit var binding: ActivityMovieDetailBinding
 	private lateinit var vm: MovieDetailViewModel
 
@@ -42,47 +42,41 @@ class MovieDetailActivity : AppCompatActivity() {
 			MovieDetailViewModelFactory(MoviesRepo(MovieAPI(APIInstance.httpClient)))
 		)[MovieDetailViewModel::class.java]
 
-		vm.data.observe(this) {
-			when (it) {
+		vm.data.observe(this) { resource ->
+			when (resource) {
 				is Resource.Success -> {
-					hideProgressBar()
+					hideProgressBar(binding.progressBar)
 					Picasso.get()
-						.load(it.data?.posterUrl)
+						.load(resource.data?.posterUrl)
 						.placeholder(R.drawable.image_placeholder)
 						.into(binding.poster)
-					binding.title.text = it.data?.nameRu ?: it.data?.nameEn ?: it.data?.nameOriginal
+					binding.title.text = resource.data?.nameRu ?: resource.data?.nameEn
+							?: resource.data?.nameOriginal
 					supportActionBar?.title =
-						it.data?.nameRu ?: it.data?.nameEn ?: it.data?.nameOriginal
-					binding.description.text = it.data?.description
+						resource.data?.nameRu ?: resource.data?.nameEn
+								?: resource.data?.nameOriginal
+					binding.description.text = resource.data?.description
 					binding.genres.text = resources.getText(R.string.genres)
 					var genresStr = ""
 
-					for (i in it.data?.genres ?: 0..1)
+					for (i in resource.data?.genres ?: 0..1)
 						genresStr += "$i, "
 					binding.genresList.text = genresStr.substring(0..genresStr.length - 3)
 				}
 
 				is Resource.Error -> {
-					hideProgressBar()
+					hideProgressBar(binding.progressBar)
 					Snackbar.make(
 						binding.root,
-						it.message ?: getString(R.string.error),
+						resource.message ?: getString(R.string.error),
 						Snackbar.LENGTH_SHORT
 					).show()
 				}
 
-				is Resource.Loading -> showProgressBar()
+				is Resource.Loading -> showProgressBar(binding.progressBar)
 			}
 		}
 
 		vm.getMovieById(movieId)
-	}
-
-	private fun hideProgressBar() {
-		binding.progressBar.visibility = View.INVISIBLE
-	}
-
-	private fun showProgressBar() {
-		binding.progressBar.visibility = View.VISIBLE
 	}
 }

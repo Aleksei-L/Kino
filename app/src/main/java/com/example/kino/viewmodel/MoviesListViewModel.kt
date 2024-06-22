@@ -13,6 +13,7 @@ class MoviesListViewModel(private val repo: MoviesRepo) : ViewModel() {
 	val data = MutableLiveData<Resource<MovieSet>>()
 
 	fun getTopMovies(pageNumber: Int) = viewModelScope.launch {
+		data.postValue(Resource.Loading())
 		val movieSetResource = repo.getTopMovies(pageNumber)
 		data.postValue(movieSetResource)
 	}

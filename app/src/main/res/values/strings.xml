@@ -3,4 +3,7 @@
 	<string name="genres">Жанры:</string>
 	<string name="film_cover_description">Обложка фильма</string>
 	<string name="error">Ошибка</string>
+	<string name="top">Популярные</string>
+	<string name="favorite">Избранное</string>
+	<string name="search">Поиск</string>
 </resources>

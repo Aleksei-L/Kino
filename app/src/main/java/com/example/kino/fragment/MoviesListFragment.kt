@@ -7,16 +7,15 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
-import com.example.kino.R
 import com.example.kino.activity.MainActivity
 import com.example.kino.activity.MovieDetailActivity
 import com.example.kino.adapter.MovieListAdapter
 import com.example.kino.data.MovieSet
+import com.example.kino.databinding.FragmentMoviesListBinding
 import com.example.kino.util.Resource
 
 class MoviesListFragment : Fragment() {
-	private var rv: RecyclerView? = null
+	private var binding: FragmentMoviesListBinding? = null
 	private lateinit var moviesAdapter: MovieListAdapter
 
 	override fun onCreateView(
@@ -24,7 +23,12 @@ class MoviesListFragment : Fragment() {
 		container: ViewGroup?,
 		savedInstanceState: Bundle?
 	): View? {
-		return inflater.inflate(R.layout.fragment_movies_list, container, false)
+		binding = FragmentMoviesListBinding.inflate(
+			inflater,
+			container,
+			false
+		)
+		return binding?.root
 	}
 
 	override fun onStart() {
@@ -41,32 +45,21 @@ class MoviesListFragment : Fragment() {
 			startActivity(myIntent)
 		}
 
-		rv = view?.findViewById(R.id.movie_list)
+		val rv = binding?.movieList
 		rv?.apply {
 			layoutManager = LinearLayoutManager(view?.context)
 			adapter = moviesAdapter
 		}
 	}
 
+	override fun onDestroyView() {
+		super.onDestroyView()
+		binding = null
+	}
+
 	fun setMovieData(resource: Resource<MovieSet>) {
-		when (resource) {
-			is Resource.Success -> {
-				//hideProgressBar()
-				resource.data?.let { movieSet ->
-					moviesAdapter.differ.submitList(movieSet.items!!)
-				}
-			}
-
-			is Resource.Error -> {
-				//hideProgressBar()
-				resource.message?.let { message ->
-					//Log.e(TAG, "An error occured: $message")
-				}
-			}
-
-			is Resource.Loading -> {
-				//showProgressBar()
-			}
+		resource.data?.let { movieSet ->
+			moviesAdapter.differ.submitList(movieSet.items!!)
 		}
 	}
 }
