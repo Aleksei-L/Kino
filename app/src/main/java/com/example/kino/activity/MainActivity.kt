@@ -3,6 +3,8 @@ package com.example.kino.activity
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.ViewModelProvider
+import androidx.navigation.findNavController
+import androidx.navigation.ui.setupWithNavController
 import com.example.kino.R
 import com.example.kino.databinding.ActivityMainBinding
 import com.example.kino.fragment.MoviesListFragment
@@ -31,8 +33,15 @@ class MainActivity : AppCompatActivity(), ProgressBar {
 			MoviesListViewModelFactory(MoviesRepo(MovieAPI(APIInstance.httpClient)))
 		)[MoviesListViewModel::class.java]
 
-		val frag =
-			supportFragmentManager.findFragmentById(R.id.movies_list_fragment) as MoviesListFragment
+		val navController = findNavController(R.id.host_fragment)
+		binding.bottomNav.setupWithNavController(navController)
+	}
+
+	override fun onStart() {
+		super.onStart()
+
+		val navHostFragment = supportFragmentManager.findFragmentById(R.id.host_fragment)
+		val frag = navHostFragment?.childFragmentManager?.fragments?.get(0) as MoviesListFragment
 
 		vm.data.observe(this) { resource ->
 			when (resource) {
@@ -53,10 +62,6 @@ class MainActivity : AppCompatActivity(), ProgressBar {
 				is Resource.Loading -> showProgressBar(binding.progressBar)
 			}
 		}
-	}
-
-	override fun onStart() {
-		super.onStart()
 
 		vm.getTopMovies(1)
 	}

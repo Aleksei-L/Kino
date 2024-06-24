@@ -20,15 +20,17 @@
 		app:layout_constraintStart_toStartOf="parent"
 		app:layout_constraintTop_toBottomOf="@id/toolbar" />
 
-	<androidx.fragment.app.FragmentContainerView
-		android:id="@+id/movies_list_fragment"
-		android:name="com.example.kino.fragment.MoviesListFragment"
-		android:layout_width="wrap_content"
+	<fragment
+		android:id="@+id/host_fragment"
+		android:name="androidx.navigation.fragment.NavHostFragment"
+		android:layout_width="match_parent"
 		android:layout_height="0dp"
 		android:layout_weight="1"
+		app:defaultNavHost="true"
 		app:layout_constraintBottom_toTopOf="@id/bottom_nav"
 		app:layout_constraintStart_toStartOf="parent"
-		app:layout_constraintTop_toBottomOf="@id/progress_bar" />
+		app:layout_constraintTop_toBottomOf="@id/progress_bar"
+		app:navGraph="@navigation/navigation" />
 
 	<com.google.android.material.bottomnavigation.BottomNavigationView
 		android:id="@+id/bottom_nav"
