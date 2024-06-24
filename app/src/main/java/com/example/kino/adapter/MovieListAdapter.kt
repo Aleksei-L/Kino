@@ -51,8 +51,6 @@ class MovieListAdapter : RecyclerView.Adapter<MovieListAdapter.MovieListViewHold
 
 	override fun getItemCount(): Int = differ.currentList.size
 
-	//fun getMovieId(position: Int): Int = /*moviesList*/differ.currentList[position]?.kinopoiskId ?: 300
-
 	fun setOnItemClickListener(listener: ((Movie) -> Unit)) {
 		onItemClickListener = listener
 	}

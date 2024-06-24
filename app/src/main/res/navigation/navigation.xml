@@ -7,7 +7,11 @@
 	<fragment
 		android:id="@+id/moviesListFragment"
 		android:name="com.example.kino.fragment.MoviesListFragment"
-		android:label="MoviesListFragment" />
+		android:label="MoviesListFragment">
+		<action
+			android:id="@+id/show_detail"
+			app:destination="@id/movieDetailFragment" />
+	</fragment>
 	<fragment
 		android:id="@+id/favoriteMoviesFragment"
 		android:name="com.example.kino.fragment.FavoriteMoviesFragment"
@@ -18,4 +22,8 @@
 		android:name="com.example.kino.fragment.SearchMoviesFragment"
 		android:label="fragment_search_movies"
 		tools:layout="@layout/fragment_search_movies" />
+	<fragment
+		android:id="@+id/movieDetailFragment"
+		android:name="com.example.kino.fragment.MovieDetailFragment"
+		android:label="MovieDetailFragment" />
 </navigation>

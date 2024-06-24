@@ -10,16 +10,6 @@
 		app:layout_constraintStart_toStartOf="parent"
 		app:layout_constraintTop_toTopOf="parent" />
 
-	<com.google.android.material.progressindicator.LinearProgressIndicator
-		android:id="@+id/progress_bar"
-		style="?attr/progressBarStyle"
-		android:layout_width="wrap_content"
-		android:layout_height="wrap_content"
-		android:indeterminate="true"
-		android:visibility="invisible"
-		app:layout_constraintStart_toStartOf="parent"
-		app:layout_constraintTop_toBottomOf="@id/toolbar" />
-
 	<fragment
 		android:id="@+id/host_fragment"
 		android:name="androidx.navigation.fragment.NavHostFragment"
@@ -29,7 +19,7 @@
 		app:defaultNavHost="true"
 		app:layout_constraintBottom_toTopOf="@id/bottom_nav"
 		app:layout_constraintStart_toStartOf="parent"
-		app:layout_constraintTop_toBottomOf="@id/progress_bar"
+		app:layout_constraintTop_toBottomOf="@id/toolbar"
 		app:navGraph="@navigation/navigation" />
 
 	<com.google.android.material.bottomnavigation.BottomNavigationView

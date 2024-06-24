@@ -4,14 +4,13 @@
 	xmlns:tools="http://schemas.android.com/tools"
 	android:id="@+id/main"
 	android:layout_width="match_parent"
-	android:layout_height="match_parent"
-	tools:context=".activity.MovieDetailActivity">
+	android:layout_height="match_parent">
 
-	<include
+	<!--<include
 		android:id="@+id/toolbar"
 		layout="@layout/toolbar"
 		app:layout_constraintStart_toStartOf="parent"
-		app:layout_constraintTop_toTopOf="parent" />
+		app:layout_constraintTop_toTopOf="parent" />-->
 
 	<com.google.android.material.progressindicator.LinearProgressIndicator
 		android:id="@+id/progress_bar"
@@ -21,7 +20,7 @@
 		android:indeterminate="true"
 		android:visibility="invisible"
 		app:layout_constraintStart_toStartOf="parent"
-		app:layout_constraintTop_toBottomOf="@id/toolbar" />
+		app:layout_constraintTop_toTopOf="parent" />
 
 	<ImageView
 		android:id="@+id/poster"

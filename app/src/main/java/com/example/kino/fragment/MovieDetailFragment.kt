@@ -1,10 +1,15 @@
-package com.example.kino.activity
+package com.example.kino.fragment
 
+import android.content.Context
 import android.os.Bundle
-import androidx.appcompat.app.AppCompatActivity
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
+import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import com.example.kino.R
-import com.example.kino.databinding.ActivityMovieDetailBinding
+import com.example.kino.activity.MainActivity
+import com.example.kino.databinding.FragmentMovieDetailBinding
 import com.example.kino.repo.MovieAPI
 import com.example.kino.repo.MoviesRepo
 import com.example.kino.util.APIInstance
@@ -15,27 +20,31 @@ import com.example.kino.viewmodel.MovieDetailViewModelFactory
 import com.google.android.material.snackbar.Snackbar
 import com.squareup.picasso.Picasso
 
-class MovieDetailActivity : AppCompatActivity(), ProgressBar {
-	private lateinit var binding: ActivityMovieDetailBinding
+class MovieDetailFragment : Fragment(), ProgressBar {
+	private lateinit var binding: FragmentMovieDetailBinding
 	private lateinit var vm: MovieDetailViewModel
+	private var movieId: Int? = null
+
+	override fun onAttach(context: Context) {
+		super.onAttach(context)
+		movieId = (context as? MainActivity)?.globalMovieId
+	}
+
+	override fun onCreateView(
+		inflater: LayoutInflater,
+		container: ViewGroup?,
+		savedInstanceState: Bundle?
+	): View {
+		binding = FragmentMovieDetailBinding.inflate(
+			inflater,
+			container,
+			false
+		)
+		return binding.root
+	}
 
 	override fun onCreate(savedInstanceState: Bundle?) {
 		super.onCreate(savedInstanceState)
-		binding = ActivityMovieDetailBinding.inflate(layoutInflater)
-		setContentView(binding.root)
-
-		setSupportActionBar(binding.toolbar.root)
-		supportActionBar?.setDisplayHomeAsUpEnabled(true)
-		binding.toolbar.root.setNavigationOnClickListener {
-			onBackPressedDispatcher.onBackPressed()
-		}
-
-		val movieId = intent.getIntExtra(MainActivity.MOVIE_ID_EXTRA, -1)
-
-		if (movieId == -1) {
-			Snackbar.make(binding.root, getString(R.string.error), Snackbar.LENGTH_SHORT).show()
-			return
-		}
 
 		vm = ViewModelProvider(
 			this,
@@ -52,9 +61,9 @@ class MovieDetailActivity : AppCompatActivity(), ProgressBar {
 						.into(binding.poster)
 					binding.title.text = resource.data?.nameRu ?: resource.data?.nameEn
 							?: resource.data?.nameOriginal
-					supportActionBar?.title =
+					/*supportActionBar?.title =
 						resource.data?.nameRu ?: resource.data?.nameEn
-								?: resource.data?.nameOriginal
+								?: resource.data?.nameOriginal*/ //TODO
 					binding.description.text = resource.data?.description
 					binding.genres.text = resources.getText(R.string.genres)
 					var genresStr = ""
@@ -77,6 +86,10 @@ class MovieDetailActivity : AppCompatActivity(), ProgressBar {
 			}
 		}
 
-		vm.getMovieById(movieId)
+		movieId?.let { vm.getMovieById(it) } ?: Snackbar.make(
+			binding.root,
+			getString(R.string.error),
+			Snackbar.LENGTH_SHORT
+		).show()
 	}
 }
