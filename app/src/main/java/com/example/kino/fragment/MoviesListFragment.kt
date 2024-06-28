@@ -28,11 +28,11 @@ class MoviesListFragment : Fragment(), ProgressBar {
 	private lateinit var binding: FragmentMoviesListBinding
 	private lateinit var vm: MoviesListViewModel
 	private lateinit var moviesAdapter: MovieListAdapter
-	private lateinit var inter: SetMovieId
+	private lateinit var setMovieIdInterface: SetMovieId
 
 	override fun onAttach(context: Context) {
 		super.onAttach(context)
-		inter = (context as MainActivity)
+		setMovieIdInterface = (context as MainActivity)
 	}
 
 	override fun onCreateView(
@@ -76,10 +76,15 @@ class MoviesListFragment : Fragment(), ProgressBar {
 			}
 		}
 
+		binding.swipeRefresh.setOnRefreshListener {
+			vm.getTopMovies(1)
+			binding.swipeRefresh.isRefreshing = false
+		}
+
 		moviesAdapter = MovieListAdapter()
 
 		moviesAdapter.setOnItemClickListener { movie ->
-			inter.setMovieId(movie.kinopoiskId)
+			setMovieIdInterface.setMovieId(movie.kinopoiskId)
 			val navController = findNavController()
 			navController.navigate(R.id.show_detail)
 		}

@@ -17,8 +17,6 @@ class MainActivity : AppCompatActivity(), SetMovieId {
 		binding = ActivityMainBinding.inflate(layoutInflater)
 		setContentView(binding.root)
 
-		setSupportActionBar(binding.toolbar.root)
-
 		val navController = findNavController(R.id.host_fragment)
 		binding.bottomNav.setupWithNavController(navController)
 	}
