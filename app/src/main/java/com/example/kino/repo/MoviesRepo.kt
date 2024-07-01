@@ -1,7 +1,7 @@
 package com.example.kino.repo
 
 import com.example.kino.data.Movie
-import com.example.kino.data.MovieSet
+import com.example.kino.paging.MovieSetPagingSource
 import com.example.kino.util.Resource
 
 class MoviesRepo(private val movieAPI: MovieAPI /*TODO DI*/) {
@@ -9,7 +9,5 @@ class MoviesRepo(private val movieAPI: MovieAPI /*TODO DI*/) {
 		return movieAPI.getMovieById(id)
 	}
 
-	suspend fun getTopMovies(pageNumber: Int): Resource<MovieSet> {
-		return movieAPI.getTopMovies(pageNumber)
-	}
+	fun getTopMovies() = MovieSetPagingSource(movieAPI)
 }

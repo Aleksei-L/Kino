@@ -1,22 +1,21 @@
 package com.example.kino.viewmodel
 
-import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.kino.data.MovieSet
+import androidx.paging.Pager
+import androidx.paging.PagingConfig
+import androidx.paging.PagingData
+import androidx.paging.cachedIn
+import com.example.kino.data.Movie
 import com.example.kino.repo.MoviesRepo
-import com.example.kino.util.Resource
 import kotlinx.coroutines.cancel
-import kotlinx.coroutines.launch
+import kotlinx.coroutines.flow.Flow
 
 class MoviesListViewModel(private val repo: MoviesRepo) : ViewModel() {
-	val data = MutableLiveData<Resource<MovieSet>>()
-
-	fun getTopMovies(pageNumber: Int) = viewModelScope.launch {
-		data.postValue(Resource.Loading())
-		val movieSetResource = repo.getTopMovies(pageNumber)
-		data.postValue(movieSetResource)
-	}
+	val pageData: Flow<PagingData<Movie>> = Pager(
+		config = PagingConfig(pageSize = 20 /*TODO*/, enablePlaceholders = false),
+		pagingSourceFactory = { repo.getTopMovies() }
+	).flow.cachedIn(viewModelScope)
 
 	override fun onCleared() {
 		super.onCleared()

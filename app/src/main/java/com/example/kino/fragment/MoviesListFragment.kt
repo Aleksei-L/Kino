@@ -5,24 +5,29 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.fragment.findNavController
+import androidx.paging.LoadState
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.kino.R
 import com.example.kino.activity.MainActivity
 import com.example.kino.adapter.MovieListAdapter
-import com.example.kino.data.MovieSet
 import com.example.kino.databinding.FragmentMoviesListBinding
 import com.example.kino.repo.MovieAPI
 import com.example.kino.repo.MoviesRepo
 import com.example.kino.util.APIInstance
 import com.example.kino.util.ProgressBar
-import com.example.kino.util.Resource
 import com.example.kino.util.SetMovieId
 import com.example.kino.viewmodel.MoviesListViewModel
 import com.example.kino.viewmodel.MoviesListViewModelFactory
 import com.google.android.material.snackbar.Snackbar
+import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.launch
 
 class MoviesListFragment : Fragment(), ProgressBar {
 	private lateinit var binding: FragmentMoviesListBinding
@@ -56,51 +61,54 @@ class MoviesListFragment : Fragment(), ProgressBar {
 			MoviesListViewModelFactory(MoviesRepo(MovieAPI(APIInstance.httpClient)))
 		)[MoviesListViewModel::class.java]
 
-		vm.data.observe(viewLifecycleOwner) { resource ->
-			when (resource) {
-				is Resource.Success -> {
-					hideProgressBar(binding.progressBar)
-					setMovieData(resource)
-				}
-
-				is Resource.Error -> {
-					hideProgressBar(binding.progressBar)
-					Snackbar.make(
-						binding.root,
-						resource.message ?: getString(R.string.error),
-						Snackbar.LENGTH_SHORT
-					).show()
-				}
-
-				is Resource.Loading -> showProgressBar(binding.progressBar)
-			}
-		}
-
+		//TODO подключить виджет
 		binding.swipeRefresh.setOnRefreshListener {
-			vm.getTopMovies(1)
+			//vm.getTopMovies(1)
+			Toast.makeText(view.context, "But nothing happens", Toast.LENGTH_SHORT).show()
 			binding.swipeRefresh.isRefreshing = false
 		}
 
-		moviesAdapter = MovieListAdapter()
-
-		moviesAdapter.setOnItemClickListener { movie ->
-			setMovieIdInterface.setMovieId(movie.kinopoiskId)
-			val navController = findNavController()
-			navController.navigate(R.id.show_detail)
+		moviesAdapter = MovieListAdapter().apply {
+			setOnItemClickListener { movie ->
+				setMovieIdInterface.setMovieId(movie.kinopoiskId)
+				val navController = findNavController()
+				navController.navigate(R.id.show_detail)
+			}
+			addLoadStateListener { loadState ->
+				if (loadState.refresh is LoadState.Loading || loadState.append is LoadState.Loading)
+					showProgressBar(binding.progressBar)
+				else {
+					hideProgressBar(binding.progressBar)
+					val errorState = when {
+						loadState.append is LoadState.Error -> loadState.append as LoadState.Error
+						loadState.prepend is LoadState.Error -> loadState.prepend as LoadState.Error
+						loadState.refresh is LoadState.Error -> loadState.refresh as LoadState.Error
+						else -> null
+					}
+					errorState?.let {
+						Snackbar.make(
+							binding.root,
+							getString(R.string.error),
+							Snackbar.LENGTH_SHORT
+						).show()
+					}
+				}
+			}
 		}
 
-		val rv = binding.movieList
-		rv.apply {
-			layoutManager = LinearLayoutManager(view.context)
-			adapter = moviesAdapter
-		}
+		binding.bindAdapter(moviesAdapter)
 
-		vm.getTopMovies(1)
+		viewLifecycleOwner.lifecycleScope.launch {
+			repeatOnLifecycle(Lifecycle.State.STARTED) {
+				vm.pageData.collectLatest {
+					moviesAdapter.submitData(it)
+				}
+			}
+		}
 	}
+}
 
-	private fun setMovieData(resource: Resource<MovieSet>) {
-		resource.data?.let { movieSet ->
-			moviesAdapter.differ.submitList(movieSet.items!!)
-		}
-	}
+private fun FragmentMoviesListBinding.bindAdapter(articleAdapter: MovieListAdapter) {
+	movieList.adapter = articleAdapter
+	movieList.layoutManager = LinearLayoutManager(movieList.context)
 }

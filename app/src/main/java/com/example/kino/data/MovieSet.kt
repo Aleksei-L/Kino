@@ -6,5 +6,5 @@ import com.squareup.moshi.JsonClass
 data class MovieSet(
 	val items: List<Movie>?,
 	val total: Int?,
-	val totalPages: Int?
+	val totalPages: Int
 )

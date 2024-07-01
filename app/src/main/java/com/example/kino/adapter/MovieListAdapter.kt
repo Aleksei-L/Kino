@@ -1,63 +1,67 @@
 package com.example.kino.adapter
 
 import android.view.LayoutInflater
-import android.view.View
 import android.view.ViewGroup
-import android.widget.ImageView
-import android.widget.TextView
-import androidx.recyclerview.widget.AsyncListDiffer
+import androidx.paging.PagingDataAdapter
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.example.kino.R
 import com.example.kino.data.Movie
+import com.example.kino.databinding.MovieListItemBinding
 import com.squareup.picasso.Picasso
 
-class MovieListAdapter : RecyclerView.Adapter<MovieListAdapter.MovieListViewHolder>() {
+class MovieListAdapter :
+	PagingDataAdapter<Movie, MovieListAdapter.MovieListViewHolder>(ARTICLE_DIFF_CALLBACK) {
 	private var onItemClickListener: ((Movie) -> Unit)? = null
-	private val differCallback = object : DiffUtil.ItemCallback<Movie>() {
-		override fun areItemsTheSame(oldItem: Movie, newItem: Movie) =
-			oldItem.kinopoiskId == newItem.kinopoiskId
 
-		override fun areContentsTheSame(oldItem: Movie, newItem: Movie) =
-			oldItem == newItem
-	}
-	val differ = AsyncListDiffer(this, differCallback)
+	companion object {
+		private val ARTICLE_DIFF_CALLBACK = object : DiffUtil.ItemCallback<Movie>() {
+			override fun areItemsTheSame(oldItem: Movie, newItem: Movie): Boolean =
+				oldItem.kinopoiskId == newItem.kinopoiskId
 
-	override fun onCreateViewHolder(parent: ViewGroup, viewType: Int) =
-		MovieListViewHolder(
-			LayoutInflater.from(parent.context).inflate(
-				R.layout.movie_list_item,
-				parent,
-				false
-			)
-		)
-
-	override fun onBindViewHolder(holder: MovieListViewHolder, position: Int) {
-		val movie = differ.currentList[position]
-
-		holder.title.text = movie?.nameRu ?: movie?.nameEn ?: movie?.nameOriginal ?: ""
-		holder.about.text =
-			(movie?.genres?.get(0)?.toCapitalize() ?: "") + " (" + (movie?.year
-				?: "") + ")" //TODO переделать на ресурсы
-		Picasso.get()
-			.load(movie?.posterUrlPreview)
-			.placeholder(R.drawable.image_placeholder)
-			.into(holder.poster)
-
-		holder.itemView.setOnClickListener {
-			onItemClickListener?.let { it(movie) }
+			override fun areContentsTheSame(oldItem: Movie, newItem: Movie): Boolean =
+				oldItem == newItem
 		}
 	}
 
-	override fun getItemCount(): Int = differ.currentList.size
+	override fun onBindViewHolder(holder: MovieListViewHolder, position: Int) {
+		val tile = getItem(position)
+		if (tile != null)
+			holder.bind(tile)
+	}
+
+	override fun onCreateViewHolder(parent: ViewGroup, viewType: Int) =
+		MovieListViewHolder(
+			MovieListItemBinding.inflate(
+				LayoutInflater.from(parent.context),
+				parent,
+				false,
+			)
+		)
 
 	fun setOnItemClickListener(listener: ((Movie) -> Unit)) {
 		onItemClickListener = listener
 	}
 
-	inner class MovieListViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
-		val poster: ImageView = itemView.findViewById(R.id.poster)
-		val title: TextView = itemView.findViewById(R.id.title)
-		val about: TextView = itemView.findViewById(R.id.about)
+	inner class MovieListViewHolder(private val binding: MovieListItemBinding) :
+		RecyclerView.ViewHolder(binding.root) {
+		fun bind(movie: Movie) {
+			binding.apply {
+				title.text = movie.nameRu ?: movie.nameEn ?: movie.nameOriginal ?: ""
+				if (movie.year != null)
+					about.text =
+						movie.genres?.get(0)?.toCapitalize() + " (" + movie.year + ")" //TODO
+				else
+					about.text =
+						movie.genres?.get(0)?.toCapitalize()
+				root.setOnClickListener {
+					onItemClickListener?.let { it(movie) }
+				}
+				Picasso.get()
+					.load(movie.posterUrlPreview)
+					.placeholder(R.drawable.image_placeholder)
+					.into(poster)
+			}
+		}
 	}
 }
