@@ -5,8 +5,10 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
+import androidx.navigation.fragment.findNavController
 import com.example.kino.R
 import com.example.kino.activity.MainActivity
 import com.example.kino.databinding.FragmentMovieDetailBinding
@@ -91,5 +93,24 @@ class MovieDetailFragment : Fragment(), ProgressBar {
 			getString(R.string.error),
 			Snackbar.LENGTH_SHORT
 		).show()
+	}
+
+	override fun onStart() {
+		super.onStart()
+		binding.topAppBar.setNavigationOnClickListener {
+			//findNavController().popBackStack()
+			findNavController().navigateUp() //TODO
+		}
+
+		binding.topAppBar.setOnMenuItemClickListener { menuItem ->
+			when (menuItem.itemId) {
+				R.id.add_to_favorites -> {
+					Toast.makeText(context, "Fav icon pressed!", Toast.LENGTH_SHORT).show()
+					true
+				}
+
+				else -> false
+			}
+		}
 	}
 }

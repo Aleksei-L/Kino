@@ -56,6 +56,10 @@ dependencies {
 	implementation(libs.okhttp)
 	implementation(libs.androidx.paging.runtime)
 	implementation(libs.picasso)
+	implementation(libs.room.runtime)
+	annotationProcessor(libs.room.compiler)
+	ksp(libs.room.compiler)
+	implementation(libs.room.ktx)
 
 	implementation(libs.androidx.navigation.fragment.ktx)
 	implementation(libs.androidx.navigation.ui.ktx)

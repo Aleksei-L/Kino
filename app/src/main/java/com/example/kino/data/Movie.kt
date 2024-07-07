@@ -1,10 +1,13 @@
 package com.example.kino.data
 
+import androidx.room.Entity
+import androidx.room.PrimaryKey
 import com.squareup.moshi.JsonClass
 
 @JsonClass(generateAdapter = true)
+@Entity
 data class Movie(
-	val kinopoiskId: Int,
+	@PrimaryKey val kinopoiskId: Int,
 	val imdbId: String?,
 	val nameRu: String?,
 	val nameEn: String?,
