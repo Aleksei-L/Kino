@@ -16,7 +16,7 @@ import androidx.paging.LoadState
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.kino.R
 import com.example.kino.activity.MainActivity
-import com.example.kino.adapter.MovieListAdapter
+import com.example.kino.adapter.MoviesListAdapter
 import com.example.kino.databinding.FragmentMoviesListBinding
 import com.example.kino.repo.MovieAPI
 import com.example.kino.repo.MoviesRepo
@@ -24,7 +24,7 @@ import com.example.kino.util.APIInstance
 import com.example.kino.util.ProgressBar
 import com.example.kino.util.SetMovieId
 import com.example.kino.viewmodel.MoviesListViewModel
-import com.example.kino.viewmodel.MoviesListViewModelFactory
+import com.example.kino.viewmodel.factory.MoviesListViewModelFactory
 import com.google.android.material.snackbar.Snackbar
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
@@ -32,7 +32,7 @@ import kotlinx.coroutines.launch
 class MoviesListFragment : Fragment(), ProgressBar {
 	private lateinit var binding: FragmentMoviesListBinding
 	private lateinit var vm: MoviesListViewModel
-	private lateinit var moviesAdapter: MovieListAdapter
+	private lateinit var moviesAdapter: MoviesListAdapter
 	private lateinit var setMovieIdInterface: SetMovieId
 
 	override fun onAttach(context: Context) {
@@ -58,7 +58,11 @@ class MoviesListFragment : Fragment(), ProgressBar {
 
 		vm = ViewModelProvider(
 			this,
-			MoviesListViewModelFactory(MoviesRepo(MovieAPI(APIInstance.httpClient)))
+			MoviesListViewModelFactory(
+				MoviesRepo(
+					MovieAPI(APIInstance.httpClient)
+				)
+			)
 		)[MoviesListViewModel::class.java]
 
 		//TODO подключить виджет
@@ -68,7 +72,7 @@ class MoviesListFragment : Fragment(), ProgressBar {
 			binding.swipeRefresh.isRefreshing = false
 		}
 
-		moviesAdapter = MovieListAdapter().apply {
+		moviesAdapter = MoviesListAdapter().apply {
 			setOnItemClickListener { movie ->
 				setMovieIdInterface.setMovieId(movie.kinopoiskId)
 				val navController = findNavController()
@@ -108,7 +112,7 @@ class MoviesListFragment : Fragment(), ProgressBar {
 	}
 }
 
-private fun FragmentMoviesListBinding.bindAdapter(articleAdapter: MovieListAdapter) {
+private fun FragmentMoviesListBinding.bindAdapter(articleAdapter: MoviesListAdapter) {
 	movieList.adapter = articleAdapter
 	movieList.layoutManager = LinearLayoutManager(movieList.context)
 }

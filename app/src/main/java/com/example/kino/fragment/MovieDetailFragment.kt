@@ -18,7 +18,7 @@ import com.example.kino.util.APIInstance
 import com.example.kino.util.ProgressBar
 import com.example.kino.util.Resource
 import com.example.kino.viewmodel.MovieDetailViewModel
-import com.example.kino.viewmodel.MovieDetailViewModelFactory
+import com.example.kino.viewmodel.factory.MovieDetailViewModelFactory
 import com.google.android.material.snackbar.Snackbar
 import com.squareup.picasso.Picasso
 
@@ -50,7 +50,11 @@ class MovieDetailFragment : Fragment(), ProgressBar {
 
 		vm = ViewModelProvider(
 			this,
-			MovieDetailViewModelFactory(MoviesRepo(MovieAPI(APIInstance.httpClient)))
+			MovieDetailViewModelFactory(
+				MoviesRepo(
+					MovieAPI(APIInstance.httpClient)
+				)
+			)
 		)[MovieDetailViewModel::class.java]
 
 		vm.data.observe(this) { resource ->
