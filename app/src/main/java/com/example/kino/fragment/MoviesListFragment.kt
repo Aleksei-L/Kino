@@ -18,11 +18,12 @@ import com.example.kino.R
 import com.example.kino.activity.MainActivity
 import com.example.kino.adapter.MoviesListAdapter
 import com.example.kino.databinding.FragmentMoviesListBinding
+import com.example.kino.db.MovieDatabase
 import com.example.kino.repo.MovieAPI
 import com.example.kino.repo.MoviesRepo
 import com.example.kino.util.APIInstance
 import com.example.kino.util.ProgressBar
-import com.example.kino.util.SetMovieId
+import com.example.kino.util.ShowDetailsForMovie
 import com.example.kino.viewmodel.MoviesListViewModel
 import com.example.kino.viewmodel.factory.MoviesListViewModelFactory
 import com.google.android.material.snackbar.Snackbar
@@ -32,12 +33,11 @@ import kotlinx.coroutines.launch
 class MoviesListFragment : Fragment(), ProgressBar {
 	private lateinit var binding: FragmentMoviesListBinding
 	private lateinit var vm: MoviesListViewModel
-	private lateinit var moviesAdapter: MoviesListAdapter
-	private lateinit var setMovieIdInterface: SetMovieId
+	private lateinit var setMovieInterface: ShowDetailsForMovie
 
 	override fun onAttach(context: Context) {
 		super.onAttach(context)
-		setMovieIdInterface = (context as MainActivity)
+		setMovieInterface = context as MainActivity
 	}
 
 	override fun onCreateView(
@@ -60,7 +60,8 @@ class MoviesListFragment : Fragment(), ProgressBar {
 			this,
 			MoviesListViewModelFactory(
 				MoviesRepo(
-					MovieAPI(APIInstance.httpClient)
+					MovieAPI(APIInstance.httpClient),
+					MovieDatabase.getInstance(requireContext()).movieDao()
 				)
 			)
 		)[MoviesListViewModel::class.java]
@@ -72,11 +73,10 @@ class MoviesListFragment : Fragment(), ProgressBar {
 			binding.swipeRefresh.isRefreshing = false
 		}
 
-		moviesAdapter = MoviesListAdapter().apply {
+		val moviesAdapter = MoviesListAdapter().apply {
 			setOnItemClickListener { movie ->
-				setMovieIdInterface.setMovieId(movie.kinopoiskId)
-				val navController = findNavController()
-				navController.navigate(R.id.show_detail)
+				setMovieInterface.setMovie(movie, ShowDetailsForMovie.MAIN_DETAILS)
+				findNavController().navigate(R.id.show_detail)
 			}
 			addLoadStateListener { loadState ->
 				if (loadState.refresh is LoadState.Loading || loadState.append is LoadState.Loading)
@@ -113,6 +113,6 @@ class MoviesListFragment : Fragment(), ProgressBar {
 }
 
 private fun FragmentMoviesListBinding.bindAdapter(articleAdapter: MoviesListAdapter) {
-	movieList.adapter = articleAdapter
-	movieList.layoutManager = LinearLayoutManager(movieList.context)
+	moviesList.adapter = articleAdapter
+	moviesList.layoutManager = LinearLayoutManager(moviesList.context)
 }
