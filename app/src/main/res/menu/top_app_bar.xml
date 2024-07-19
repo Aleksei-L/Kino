@@ -8,4 +8,11 @@
 		android:title="@string/add_to_favorite"
 		app:showAsAction="ifRoom" />
 
+	<item
+		android:id="@+id/remove_from_favorites"
+		android:icon="@drawable/ic_top_filled"
+		android:title="@string/remove_from_favorite"
+		android:visible="false"
+		app:showAsAction="ifRoom" />
+
 </menu>

@@ -9,7 +9,7 @@ class CountryConverter {
 		var res = ""
 		countries?.let {
 			it.forEach { country ->
-				res += country.toString()
+				res += "$country "
 			}
 		}
 		return res
@@ -17,6 +17,6 @@ class CountryConverter {
 
 	@TypeConverter
 	fun fromStringToCountry(data: String): List<Country> {
-		return data.split(" ").map { it as Country }
+		return data.split(" ").map { Country(it) }
 	}
 }

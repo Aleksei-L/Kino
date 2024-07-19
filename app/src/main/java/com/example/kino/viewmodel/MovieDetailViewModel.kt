@@ -5,17 +5,32 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.kino.data.Movie
 import com.example.kino.repo.MoviesRepo
-import com.example.kino.util.Resource
 import kotlinx.coroutines.cancel
 import kotlinx.coroutines.launch
 
 class MovieDetailViewModel(private val repo: MoviesRepo) : ViewModel() {
-	val data = MutableLiveData<Resource<Movie>>()
+	val loadingState = MutableLiveData<Boolean>()
+	val isMovieInFavorites = MutableLiveData<Boolean>()
+	val data = MutableLiveData<Movie?>()
 
-	fun getMovieById(id: Int) = viewModelScope.launch {
-		data.postValue(Resource.Loading())
-		val movieResource = repo.getMovieById(id)
-		data.postValue(movieResource)
+	fun getMovieById(id: Int, needFreshData: Boolean) = viewModelScope.launch {
+		loadingState.postValue(true)
+		val movie = repo.getMovieById(id, needFreshData)
+		data.postValue(movie)
+		loadingState.postValue(false)
+	}
+
+	fun isMovieInDatabase(id: Int) = viewModelScope.launch {
+		val movieInDatabase = repo.getMovieByIdFromDatabase(id)
+		isMovieInFavorites.postValue(movieInDatabase != null)
+	}
+
+	fun addMovieToFavorite(movie: Movie) = viewModelScope.launch {
+		repo.insertMovieToDatabase(movie)
+	}
+
+	fun removeMovieFromFavorite(movie: Movie) = viewModelScope.launch {
+		repo.removeMovieFromDatabase(movie)
 	}
 
 	override fun onCleared() {

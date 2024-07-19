@@ -17,16 +17,20 @@ abstract class MovieDatabase : RoomDatabase() {
 	companion object {
 		@Volatile
 		private var INSTANCE: MovieDatabase? = null
-		private var LOCK = Any()
-		operator fun invoke(context: Context) = INSTANCE ?: synchronized(LOCK) {
-			INSTANCE ?: buildDatabase(context).also {
-				INSTANCE = it
+
+		fun getInstance(context: Context): MovieDatabase {
+			synchronized(this) {
+				var instance = INSTANCE
+				if (instance == null) {
+					instance = Room.databaseBuilder(
+						context.applicationContext,
+						MovieDatabase::class.java,
+						"movie_database"
+					).build()
+					INSTANCE = instance
+				}
+				return instance
 			}
 		}
-
-		private fun buildDatabase(context: Context): MovieDatabase =
-			Room.databaseBuilder(
-				context.applicationContext, MovieDatabase::class.java, "movie-database"
-			).build()
 	}
 }

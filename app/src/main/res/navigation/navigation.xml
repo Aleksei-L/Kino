@@ -17,7 +17,12 @@
 		android:id="@+id/favoriteMoviesFragment"
 		android:name="com.example.kino.fragment.FavoriteMoviesFragment"
 		android:label="fragment_favorite_movies"
-		tools:layout="@layout/fragment_favorite_movies" />
+		tools:layout="@layout/fragment_favorite_movies">
+		<action
+			android:id="@+id/show_favorite_details"
+			app:destination="@id/movieDetailFragment"
+			app:popUpTo="@id/favoriteMoviesFragment" />
+	</fragment>
 	<fragment
 		android:id="@+id/searchMoviesFragment"
 		android:name="com.example.kino.fragment.SearchMoviesFragment"

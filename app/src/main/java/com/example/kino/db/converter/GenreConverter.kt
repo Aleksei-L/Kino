@@ -9,7 +9,7 @@ class GenreConverter {
 		var res = ""
 		genres?.let {
 			it.forEach { genre ->
-				res += genre.toString()
+				res += "$genre "
 			}
 		}
 		return res
@@ -17,6 +17,6 @@ class GenreConverter {
 
 	@TypeConverter
 	fun fromStringToGenre(data: String): List<Genre> {
-		return data.split(" ").map { it as Genre }
+		return data.split(" ").map { Genre(it) }
 	}
 }

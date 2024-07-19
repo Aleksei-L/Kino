@@ -5,12 +5,14 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.navigation.findNavController
 import androidx.navigation.ui.setupWithNavController
 import com.example.kino.R
+import com.example.kino.data.Movie
 import com.example.kino.databinding.ActivityMainBinding
-import com.example.kino.util.SetMovieId
+import com.example.kino.util.ShowDetailsForMovie
 
-class MainActivity : AppCompatActivity(), SetMovieId {
+class MainActivity : AppCompatActivity(), ShowDetailsForMovie {
 	private lateinit var binding: ActivityMainBinding
-	var globalMovieId: Int? = null
+	val detailMovieArray = arrayOfNulls<Movie>(3)
+	var fromFragment: Int? = null
 
 	override fun onCreate(savedInstanceState: Bundle?) {
 		super.onCreate(savedInstanceState)
@@ -21,7 +23,8 @@ class MainActivity : AppCompatActivity(), SetMovieId {
 		binding.bottomNav.setupWithNavController(navController)
 	}
 
-	override fun setMovieId(id: Int) {
-		globalMovieId = id
+	override fun setMovie(movie: Movie, position: Int) {
+		detailMovieArray[position] = movie
+		fromFragment = position
 	}
 }
