@@ -1,11 +1,18 @@
 package com.example.kino.fragment
 
+import android.app.SearchManager
+import android.content.ComponentName
 import android.content.Context
 import android.os.Bundle
 import android.view.LayoutInflater
+import android.view.Menu
+import android.view.MenuInflater
+import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
+import android.widget.SearchView
 import android.widget.Toast
+import androidx.core.view.MenuProvider
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.ViewModelProvider
@@ -16,6 +23,7 @@ import androidx.paging.LoadState
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.kino.R
 import com.example.kino.activity.MainActivity
+import com.example.kino.activity.SearchActivity
 import com.example.kino.adapter.MoviesListAdapter
 import com.example.kino.databinding.FragmentMoviesListBinding
 import com.example.kino.db.MovieDatabase
@@ -55,6 +63,33 @@ class MoviesListFragment : Fragment(), ProgressBar {
 
 	override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
 		super.onViewCreated(view, savedInstanceState)
+
+		binding.topAppBar.apply {
+			title = getString(R.string.app_name)
+		}
+
+		binding.topAppBar.addMenuProvider(object : MenuProvider {
+			override fun onCreateMenu(menu: Menu, menuInflater: MenuInflater) {
+				menuInflater.inflate(R.menu.main_top_app_bar, menu)
+
+				val searchManager =
+					activity?.getSystemService(Context.SEARCH_SERVICE) as SearchManager
+				(menu.findItem(R.id.search).actionView as SearchView).apply {
+					setSearchableInfo(
+						searchManager.getSearchableInfo(
+							ComponentName(
+								context,
+								SearchActivity::class.java
+							)
+						)
+					)
+				}
+			}
+
+			override fun onMenuItemSelected(menuItem: MenuItem): Boolean {
+				return true
+			}
+		}, viewLifecycleOwner)
 
 		vm = ViewModelProvider(
 			this,

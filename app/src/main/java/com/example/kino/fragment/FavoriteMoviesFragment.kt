@@ -48,6 +48,10 @@ class FavoriteMoviesFragment : Fragment(), ProgressBar {
 	override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
 		super.onViewCreated(view, savedInstanceState)
 
+		binding.topAppBar.apply {
+			title = getString(R.string.app_name)
+		}
+
 		vm = ViewModelProvider(
 			this,
 			FavoriteMoviesViewModelFactory(

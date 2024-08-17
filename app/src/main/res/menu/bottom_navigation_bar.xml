@@ -10,9 +10,4 @@
 		android:enabled="true"
 		android:icon="@drawable/ic_favorite"
 		android:title="@string/favorite" />
-	<item
-		android:id="@id/searchMoviesFragment"
-		android:enabled="true"
-		android:icon="@drawable/ic_search"
-		android:title="@string/search" />
 </menu>

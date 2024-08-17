@@ -24,11 +24,6 @@
 			app:popUpTo="@id/favoriteMoviesFragment" />
 	</fragment>
 	<fragment
-		android:id="@+id/searchMoviesFragment"
-		android:name="com.example.kino.fragment.SearchMoviesFragment"
-		android:label="fragment_search_movies"
-		tools:layout="@layout/fragment_search_movies" />
-	<fragment
 		android:id="@+id/movieDetailFragment"
 		android:name="com.example.kino.fragment.MovieDetailFragment"
 		android:label="MovieDetailFragment" />
