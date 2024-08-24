@@ -1,17 +1,25 @@
 package com.example.kino.fragment
 
+import android.app.SearchManager
+import android.content.ComponentName
 import android.content.Context
 import android.os.Bundle
 import android.view.LayoutInflater
+import android.view.Menu
+import android.view.MenuInflater
+import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
+import android.widget.SearchView
+import androidx.core.view.MenuProvider
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.kino.R
 import com.example.kino.activity.MainActivity
-import com.example.kino.adapter.FavoriteMoviesAdapter
+import com.example.kino.activity.SearchActivity
+import com.example.kino.adapter.MoviesAdapter
 import com.example.kino.databinding.FragmentFavoriteMoviesBinding
 import com.example.kino.db.MovieDatabase
 import com.example.kino.repo.MovieAPI
@@ -62,7 +70,30 @@ class FavoriteMoviesFragment : Fragment(), ProgressBar {
 			)
 		)[FavoriteMoviesViewModel::class.java]
 
-		val favAdapter = FavoriteMoviesAdapter().apply {
+		binding.topAppBar.addMenuProvider(object : MenuProvider {
+			override fun onCreateMenu(menu: Menu, menuInflater: MenuInflater) {
+				menuInflater.inflate(R.menu.main_top_app_bar, menu)
+
+				val searchManager =
+					activity?.getSystemService(Context.SEARCH_SERVICE) as SearchManager
+				(menu.findItem(R.id.search).actionView as SearchView).apply {
+					setSearchableInfo(
+						searchManager.getSearchableInfo(
+							ComponentName(
+								context,
+								SearchActivity::class.java
+							)
+						)
+					)
+				}
+			}
+
+			override fun onMenuItemSelected(menuItem: MenuItem): Boolean {
+				return true
+			}
+		}, viewLifecycleOwner)
+
+		val favAdapter = MoviesAdapter().apply {
 			setOnItemClickListener { movie ->
 				setMovieInterface.setMovie(movie, ShowDetailsForMovie.FAVORITE_DETAILS)
 				findNavController().navigate(R.id.show_favorite_details)

@@ -12,8 +12,8 @@ import com.example.kino.R
 import com.example.kino.data.Movie
 import com.squareup.picasso.Picasso
 
-class FavoriteMoviesAdapter :
-	RecyclerView.Adapter<FavoriteMoviesAdapter.FavoriteMoviesViewHolder>() {
+class MoviesAdapter :
+	RecyclerView.Adapter<MoviesAdapter.FavoriteMoviesViewHolder>() {
 	private var onItemClickListener: ((Movie) -> Unit)? = null
 	private val differCallback = object : DiffUtil.ItemCallback<Movie>() {
 		override fun areItemsTheSame(oldItem: Movie, newItem: Movie) =

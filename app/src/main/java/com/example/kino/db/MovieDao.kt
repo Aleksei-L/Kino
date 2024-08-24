@@ -15,6 +15,13 @@ interface MovieDao {
 	@Query("SELECT * FROM Movie WHERE kinopoiskId = :id")
 	fun getMovieById(id: Int): Movie?
 
+	@Query(
+		"SELECT * FROM Movie WHERE nameRu LIKE '%' || :name || '%' " +
+				"OR nameOriginal LIKE '%' || :name || '%'" +
+				"OR nameEn LIKE '%' || :name || '%'"
+	)
+	fun getMoviesByName(name: String): List<Movie>
+
 	@Insert(onConflict = OnConflictStrategy.REPLACE)
 	fun insertMovie(movie: Movie)
 

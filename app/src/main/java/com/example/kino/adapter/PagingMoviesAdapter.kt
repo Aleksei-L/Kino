@@ -10,8 +10,8 @@ import com.example.kino.data.Movie
 import com.example.kino.databinding.MovieListItemBinding
 import com.squareup.picasso.Picasso
 
-class MoviesListAdapter :
-	PagingDataAdapter<Movie, MoviesListAdapter.MovieListViewHolder>(ARTICLE_DIFF_CALLBACK) {
+class PagingMoviesAdapter :
+	PagingDataAdapter<Movie, PagingMoviesAdapter.MovieListViewHolder>(ARTICLE_DIFF_CALLBACK) {
 	private var onItemClickListener: ((Movie) -> Unit)? = null
 
 	companion object {

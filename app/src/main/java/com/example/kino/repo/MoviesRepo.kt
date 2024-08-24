@@ -31,6 +31,10 @@ class MoviesRepo(
 			return@withContext data
 		}
 
+	suspend fun getMoviesByName(name: String): List<Movie> = withContext(Dispatchers.IO) {
+		return@withContext movieDao.getMoviesByName(name)
+	}
+
 	suspend fun getMoviesFromDatabase(): List<Movie> = withContext(Dispatchers.IO) {
 		return@withContext movieDao.getAllMovies()
 	}

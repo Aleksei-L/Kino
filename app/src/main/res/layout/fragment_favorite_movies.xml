@@ -19,8 +19,7 @@
 				android:id="@+id/top_app_bar"
 				android:layout_width="match_parent"
 				android:layout_height="wrap_content"
-				android:minHeight="?attr/actionBarSize"
-				app:menu="@menu/main_top_app_bar" />
+				android:minHeight="?attr/actionBarSize" />
 		</com.google.android.material.appbar.AppBarLayout>
 	</androidx.coordinatorlayout.widget.CoordinatorLayout>
 
