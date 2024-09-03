@@ -36,7 +36,6 @@ class MovieDetailFragment : Fragment(), ProgressBar {
 		thisMovie = when (fromFragment) {
 			ShowDetailsForMovie.MAIN_DETAILS -> context.detailMovieArray[ShowDetailsForMovie.MAIN_DETAILS]
 			ShowDetailsForMovie.FAVORITE_DETAILS -> context.detailMovieArray[ShowDetailsForMovie.FAVORITE_DETAILS]
-			ShowDetailsForMovie.SEARCH_DETAILS -> context.detailMovieArray[ShowDetailsForMovie.SEARCH_DETAILS]
 			else -> null
 		}
 	}

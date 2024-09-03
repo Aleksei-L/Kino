@@ -18,6 +18,13 @@ class FavoriteMoviesViewModel(private val repo: MoviesRepo) : ViewModel() {
 		loadingState.postValue(false)
 	}
 
+	fun getMoviesByName(name: String) = viewModelScope.launch {
+		loadingState.postValue(true)
+		val list = repo.getMoviesByName(name)
+		data.postValue(list)
+		loadingState.postValue(false)
+	}
+
 	override fun onCleared() {
 		super.onCleared()
 		viewModelScope.cancel()

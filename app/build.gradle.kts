@@ -49,21 +49,32 @@ dependencies {
 	implementation(libs.androidx.legacy.support.v4)
 	implementation(libs.androidx.lifecycle.livedata.ktx)
 	implementation(libs.androidx.fragment.ktx)
+	implementation(libs.androidx.lifecycle.viewmodel.ktx)
+
+	// JSON парсер
+	implementation(libs.moshi)
 	ksp(libs.moshi.ksp)
 
-	implementation(libs.moshi)
-	implementation(libs.androidx.lifecycle.viewmodel.ktx)
+	// HTTP клиент
 	implementation(libs.okhttp)
+
+	// Постраничная загрузка данных
 	implementation(libs.androidx.paging.runtime)
+
+	// Загрузка изображения по URL
 	implementation(libs.picasso)
+
+	// База данных Room
 	implementation(libs.room.runtime)
+	implementation(libs.room.ktx)
 	annotationProcessor(libs.room.compiler)
 	ksp(libs.room.compiler)
-	implementation(libs.room.ktx)
 
+	// Навигация по фрагментам
 	implementation(libs.androidx.navigation.fragment.ktx)
 	implementation(libs.androidx.navigation.ui.ktx)
 
+	// Тестирование
 	testImplementation(libs.junit)
 	androidTestImplementation(libs.androidx.junit)
 	androidTestImplementation(libs.androidx.espresso.core)

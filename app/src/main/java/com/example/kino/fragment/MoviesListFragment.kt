@@ -5,7 +5,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
+import android.view.inputmethod.EditorInfo.IME_ACTION_SEARCH
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.ViewModelProvider
@@ -56,10 +56,6 @@ class MoviesListFragment : Fragment(), ProgressBar {
 	override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
 		super.onViewCreated(view, savedInstanceState)
 
-		binding.topAppBar.apply {
-			title = getString(R.string.app_name)
-		}
-
 		vm = ViewModelProvider(
 			this,
 			MoviesListViewModelFactory(
@@ -70,11 +66,20 @@ class MoviesListFragment : Fragment(), ProgressBar {
 			)
 		)[MoviesListViewModel::class.java]
 
-		//TODO подключить виджет
-		binding.swipeRefresh.setOnRefreshListener {
-			//vm.getTopMovies(1)
-			Toast.makeText(view.context, "But nothing happens", Toast.LENGTH_SHORT).show()
-			binding.swipeRefresh.isRefreshing = false
+		binding.searchView.apply {
+			setupWithSearchBar(binding.searchBar)
+			editText.apply {
+				setOnEditorActionListener { _, actionId, _ ->
+					if (actionId == IME_ACTION_SEARCH) {
+						vm.searchMovie(this.toString())
+
+						binding.searchBar.setText(binding.searchView.text)
+						binding.searchView.hide()
+						return@setOnEditorActionListener true
+					}
+					return@setOnEditorActionListener false
+				}
+			}
 		}
 
 		val moviesAdapter = PagingMoviesAdapter().apply {
@@ -102,6 +107,10 @@ class MoviesListFragment : Fragment(), ProgressBar {
 					}
 				}
 			}
+		}
+
+		vm.data.observe(viewLifecycleOwner) { newMoviesList ->
+			moviesAdapter.differ.submitList(newMoviesList)
 		}
 
 		binding.bindAdapter(moviesAdapter)

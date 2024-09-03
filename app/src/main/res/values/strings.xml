@@ -8,4 +8,6 @@
 	<string name="search">Поиск</string>
 	<string name="add_to_favorite">Добавить в избранное</string>
 	<string name="remove_from_favorite">Удалить из избранного</string>
+	<string name="search_bar_favorite_hint">Поиск по избранному</string>
+	<string name="search_bar_main_hint">Поиск по всем фильмам</string>
 </resources>

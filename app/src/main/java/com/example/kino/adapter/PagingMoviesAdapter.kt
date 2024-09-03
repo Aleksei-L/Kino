@@ -3,6 +3,7 @@ package com.example.kino.adapter
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.paging.PagingDataAdapter
+import androidx.recyclerview.widget.AsyncListDiffer
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.example.kino.R
@@ -23,6 +24,8 @@ class PagingMoviesAdapter :
 				oldItem == newItem
 		}
 	}
+
+	val differ = AsyncListDiffer(this, ARTICLE_DIFF_CALLBACK)
 
 	override fun onBindViewHolder(holder: MovieListViewHolder, position: Int) {
 		val tile = getItem(position)

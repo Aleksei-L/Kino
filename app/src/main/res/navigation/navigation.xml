@@ -4,6 +4,7 @@
 	xmlns:tools="http://schemas.android.com/tools"
 	android:id="@+id/navigation"
 	app:startDestination="@id/moviesListFragment">
+
 	<fragment
 		android:id="@+id/moviesListFragment"
 		android:name="com.example.kino.fragment.MoviesListFragment"
@@ -13,6 +14,7 @@
 			app:destination="@id/movieDetailFragment"
 			app:popUpTo="@id/moviesListFragment" />
 	</fragment>
+
 	<fragment
 		android:id="@+id/favoriteMoviesFragment"
 		android:name="com.example.kino.fragment.FavoriteMoviesFragment"
@@ -23,6 +25,7 @@
 			app:destination="@id/movieDetailFragment"
 			app:popUpTo="@id/favoriteMoviesFragment" />
 	</fragment>
+
 	<fragment
 		android:id="@+id/movieDetailFragment"
 		android:name="com.example.kino.fragment.MovieDetailFragment"

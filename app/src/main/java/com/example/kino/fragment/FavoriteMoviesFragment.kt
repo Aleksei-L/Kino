@@ -1,24 +1,17 @@
 package com.example.kino.fragment
 
-import android.app.SearchManager
-import android.content.ComponentName
 import android.content.Context
 import android.os.Bundle
 import android.view.LayoutInflater
-import android.view.Menu
-import android.view.MenuInflater
-import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
-import android.widget.SearchView
-import androidx.core.view.MenuProvider
+import android.view.inputmethod.EditorInfo.IME_ACTION_SEARCH
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.kino.R
 import com.example.kino.activity.MainActivity
-import com.example.kino.activity.SearchActivity
 import com.example.kino.adapter.MoviesAdapter
 import com.example.kino.databinding.FragmentFavoriteMoviesBinding
 import com.example.kino.db.MovieDatabase
@@ -56,10 +49,7 @@ class FavoriteMoviesFragment : Fragment(), ProgressBar {
 	override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
 		super.onViewCreated(view, savedInstanceState)
 
-		binding.topAppBar.apply {
-			title = getString(R.string.app_name)
-		}
-
+		//todo requireContext() создаёт ошибку при отсутсвии контекста, обработать в try-catch
 		vm = ViewModelProvider(
 			this,
 			FavoriteMoviesViewModelFactory(
@@ -70,30 +60,23 @@ class FavoriteMoviesFragment : Fragment(), ProgressBar {
 			)
 		)[FavoriteMoviesViewModel::class.java]
 
-		binding.topAppBar.addMenuProvider(object : MenuProvider {
-			override fun onCreateMenu(menu: Menu, menuInflater: MenuInflater) {
-				menuInflater.inflate(R.menu.main_top_app_bar, menu)
+		binding.searchView.apply {
+			setupWithSearchBar(binding.searchBar)
+			editText.apply {
+				setOnEditorActionListener { _, actionId, _ ->
+					if (actionId == IME_ACTION_SEARCH) {
+						vm.getMoviesByName(this.toString())
 
-				val searchManager =
-					activity?.getSystemService(Context.SEARCH_SERVICE) as SearchManager
-				(menu.findItem(R.id.search).actionView as SearchView).apply {
-					setSearchableInfo(
-						searchManager.getSearchableInfo(
-							ComponentName(
-								context,
-								SearchActivity::class.java
-							)
-						)
-					)
+						binding.searchBar.setText(binding.searchView.text)
+						binding.searchView.hide()
+						return@setOnEditorActionListener true
+					}
+					return@setOnEditorActionListener false
 				}
 			}
+		}
 
-			override fun onMenuItemSelected(menuItem: MenuItem): Boolean {
-				return true
-			}
-		}, viewLifecycleOwner)
-
-		val favAdapter = MoviesAdapter().apply {
+		val favoriteAdapter = MoviesAdapter().apply {
 			setOnItemClickListener { movie ->
 				setMovieInterface.setMovie(movie, ShowDetailsForMovie.FAVORITE_DETAILS)
 				findNavController().navigate(R.id.show_favorite_details)
@@ -101,7 +84,7 @@ class FavoriteMoviesFragment : Fragment(), ProgressBar {
 		}
 
 		vm.data.observe(viewLifecycleOwner) { newMoviesList ->
-			favAdapter.differ.submitList(newMoviesList)
+			favoriteAdapter.differ.submitList(newMoviesList)
 		}
 
 		vm.loadingState.observe(viewLifecycleOwner) { loadingState ->
@@ -113,7 +96,7 @@ class FavoriteMoviesFragment : Fragment(), ProgressBar {
 
 		binding.moviesList.apply {
 			layoutManager = LinearLayoutManager(view.context)
-			adapter = favAdapter
+			adapter = favoriteAdapter
 		}
 
 		vm.getFavoriteMovies()

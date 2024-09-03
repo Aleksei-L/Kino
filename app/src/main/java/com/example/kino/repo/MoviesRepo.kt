@@ -55,5 +55,15 @@ class MoviesRepo(
 		movieDao.deleteMovie(movie)
 	}
 
+	suspend fun searchMoviesFromApi(query: String): List<Movie>? {
+		var data: List<Movie>? = null
+
+		val res = movieAPI.searchMovies(query)
+		if (res is Resource.Success)
+			data = res.data!!.items
+
+		return data
+	}
+
 	fun getTopMovies() = MovieSetPagingSource(movieAPI)
 }

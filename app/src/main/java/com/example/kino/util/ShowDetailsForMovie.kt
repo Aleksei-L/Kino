@@ -11,8 +11,6 @@ import com.example.kino.data.Movie
  * 0 - Все фильмы
  *
  * 1 - Избранные фильмы
- *
- * 2 - Фильмы, найденные поиском
  */
 interface ShowDetailsForMovie {
 	fun setMovie(movie: Movie, position: Int)
@@ -20,6 +18,5 @@ interface ShowDetailsForMovie {
 	companion object {
 		const val MAIN_DETAILS = 0
 		const val FAVORITE_DETAILS = 1
-		const val SEARCH_DETAILS = 2
 	}
 }
