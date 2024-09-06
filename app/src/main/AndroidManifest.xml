@@ -17,6 +17,9 @@
 		android:theme="@style/Theme.Kino"
 		tools:targetApi="31">
 		<activity
+			android:name=".activity.DetailActivity"
+			android:exported="false" />
+		<activity
 			android:name=".activity.MainActivity"
 			android:exported="true">
 			<intent-filter>

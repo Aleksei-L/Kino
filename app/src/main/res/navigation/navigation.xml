@@ -8,11 +8,13 @@
 	<fragment
 		android:id="@+id/moviesListFragment"
 		android:name="com.example.kino.fragment.MoviesListFragment"
-		android:label="MoviesListFragment">
+		android:label="MoviesListFragment"
+		tools:layout="@layout/movie_list_item">
 		<action
 			android:id="@+id/show_detail"
-			app:destination="@id/movieDetailFragment"
-			app:popUpTo="@id/moviesListFragment" />
+			app:destination="@id/detailActivity"
+			app:popUpTo="@id/moviesListFragment"
+			app:popUpToInclusive="false" />
 	</fragment>
 
 	<fragment
@@ -22,12 +24,14 @@
 		tools:layout="@layout/fragment_favorite_movies">
 		<action
 			android:id="@+id/show_favorite_details"
-			app:destination="@id/movieDetailFragment"
-			app:popUpTo="@id/favoriteMoviesFragment" />
+			app:destination="@id/detailActivity"
+			app:popUpTo="@id/favoriteMoviesFragment"
+			app:popUpToInclusive="false" />
 	</fragment>
 
-	<fragment
-		android:id="@+id/movieDetailFragment"
-		android:name="com.example.kino.fragment.MovieDetailFragment"
-		android:label="MovieDetailFragment" />
+	<activity
+		android:id="@+id/detailActivity"
+		android:name="com.example.kino.activity.DetailActivity"
+		android:label="DetailActivity"
+		tools:layout="@layout/activity_detail" />
 </navigation>

@@ -1,6 +1,5 @@
 package com.example.kino.fragment
 
-import android.content.Context
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -23,7 +22,6 @@ import com.example.kino.repo.MovieAPI
 import com.example.kino.repo.MoviesRepo
 import com.example.kino.util.APIInstance
 import com.example.kino.util.ProgressBar
-import com.example.kino.util.ShowDetailsForMovie
 import com.example.kino.viewmodel.MoviesListViewModel
 import com.example.kino.viewmodel.factory.MoviesListViewModelFactory
 import com.google.android.material.snackbar.Snackbar
@@ -33,12 +31,6 @@ import kotlinx.coroutines.launch
 class MoviesListFragment : Fragment(), ProgressBar {
 	private lateinit var binding: FragmentMoviesListBinding
 	private lateinit var vm: MoviesListViewModel
-	private lateinit var setMovieInterface: ShowDetailsForMovie
-
-	override fun onAttach(context: Context) {
-		super.onAttach(context)
-		setMovieInterface = context as MainActivity
-	}
 
 	override fun onCreateView(
 		inflater: LayoutInflater,
@@ -84,8 +76,10 @@ class MoviesListFragment : Fragment(), ProgressBar {
 
 		val moviesAdapter = PagingMoviesAdapter().apply {
 			setOnItemClickListener { movie ->
-				setMovieInterface.setMovie(movie, ShowDetailsForMovie.MAIN_DETAILS)
-				findNavController().navigate(R.id.show_detail)
+				findNavController().navigate(
+					R.id.show_detail,
+					Bundle().apply { putInt(MainActivity.EXTRA_MOVIE_ID, movie.kinopoiskId) }
+				)
 			}
 			addLoadStateListener { loadState ->
 				if (loadState.refresh is LoadState.Loading || loadState.append is LoadState.Loading)

@@ -1,8 +1,11 @@
 <resources>
 	<string name="app_name">Kino</string>
-	<string name="genres">Жанры:</string>
+	<string name="genres">&lt;b>Жанры: &lt;/b></string>
+	<string name="countries">&lt;b>Страны: &lt;/b></string>
+	<string name="year">&lt;b>Год:&lt;/b> %1$d</string>
 	<string name="film_cover_description">Обложка фильма</string>
 	<string name="error">Ошибка</string>
+	<string name="error_occurred">Произошла ошибка</string>
 	<string name="top">Популярные</string>
 	<string name="favorite">Избранное</string>
 	<string name="search">Поиск</string>

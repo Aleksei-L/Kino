@@ -1,6 +1,5 @@
 package com.example.kino.fragment
 
-import android.content.Context
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -19,19 +18,12 @@ import com.example.kino.repo.MovieAPI
 import com.example.kino.repo.MoviesRepo
 import com.example.kino.util.APIInstance
 import com.example.kino.util.ProgressBar
-import com.example.kino.util.ShowDetailsForMovie
 import com.example.kino.viewmodel.FavoriteMoviesViewModel
 import com.example.kino.viewmodel.factory.FavoriteMoviesViewModelFactory
 
 class FavoriteMoviesFragment : Fragment(), ProgressBar {
 	private lateinit var binding: FragmentFavoriteMoviesBinding
 	private lateinit var vm: FavoriteMoviesViewModel
-	private lateinit var setMovieInterface: ShowDetailsForMovie
-
-	override fun onAttach(context: Context) {
-		super.onAttach(context)
-		setMovieInterface = context as MainActivity
-	}
 
 	override fun onCreateView(
 		inflater: LayoutInflater,
@@ -78,8 +70,10 @@ class FavoriteMoviesFragment : Fragment(), ProgressBar {
 
 		val favoriteAdapter = MoviesAdapter().apply {
 			setOnItemClickListener { movie ->
-				setMovieInterface.setMovie(movie, ShowDetailsForMovie.FAVORITE_DETAILS)
-				findNavController().navigate(R.id.show_favorite_details)
+				findNavController().navigate(
+					R.id.show_favorite_details,
+					Bundle().apply { putInt(MainActivity.EXTRA_MOVIE_ID, movie.kinopoiskId) }
+				)
 			}
 		}
 
