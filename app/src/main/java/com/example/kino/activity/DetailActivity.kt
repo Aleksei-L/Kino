@@ -4,24 +4,21 @@ import android.os.Bundle
 import android.text.Html
 import android.text.Html.FROM_HTML_MODE_LEGACY
 import android.widget.Toast
+import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
-import androidx.lifecycle.ViewModelProvider
 import com.example.kino.R
 import com.example.kino.data.Movie
 import com.example.kino.databinding.ActivityDetailBinding
-import com.example.kino.db.MovieDatabase
-import com.example.kino.repo.MovieAPI
-import com.example.kino.repo.MoviesRepo
-import com.example.kino.util.APIInstance
 import com.example.kino.util.ProgressBar
 import com.example.kino.viewmodel.MovieDetailViewModel
-import com.example.kino.viewmodel.factory.MovieDetailViewModelFactory
 import com.google.android.material.snackbar.Snackbar
 import com.squareup.picasso.Picasso
+import dagger.hilt.android.AndroidEntryPoint
 
+@AndroidEntryPoint
 class DetailActivity : AppCompatActivity(), ProgressBar {
+	private val vm: MovieDetailViewModel by viewModels()
 	private lateinit var binding: ActivityDetailBinding
-	private lateinit var vm: MovieDetailViewModel
 	private var movieId = -1
 	private var thisMovie: Movie? = null
 	private var isAlreadyFavorite = false
@@ -38,16 +35,6 @@ class DetailActivity : AppCompatActivity(), ProgressBar {
 		}
 
 		//TODO сделать кнопку назад рабочей
-
-		vm = ViewModelProvider(
-			this,
-			MovieDetailViewModelFactory(
-				MoviesRepo(
-					MovieAPI(APIInstance.httpClient),
-					MovieDatabase.getInstance(this).movieDao()
-				)
-			)
-		)[MovieDetailViewModel::class.java]
 
 		vm.loadingState.observe(this) { loadingState ->
 			when (loadingState) {

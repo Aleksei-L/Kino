@@ -5,10 +5,13 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.kino.data.Movie
 import com.example.kino.repo.MoviesRepo
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.cancel
 import kotlinx.coroutines.launch
+import javax.inject.Inject
 
-class FavoriteMoviesViewModel(private val repo: MoviesRepo) : ViewModel() {
+@HiltViewModel
+class FavoriteMoviesViewModel @Inject constructor(private val repo: MoviesRepo) : ViewModel() {
 	val loadingState = MutableLiveData<Boolean>()
 	val data = MutableLiveData<List<Movie>>()
 

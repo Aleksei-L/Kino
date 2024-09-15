@@ -1,7 +1,8 @@
 plugins {
 	alias(libs.plugins.androidApplication)
 	alias(libs.plugins.jetbrainsKotlinAndroid)
-	id("com.google.devtools.ksp")
+	alias(libs.plugins.ksp)
+	alias(libs.plugins.hilt)
 }
 
 android {
@@ -73,6 +74,10 @@ dependencies {
 	// Навигация по фрагментам
 	implementation(libs.androidx.navigation.fragment.ktx)
 	implementation(libs.androidx.navigation.ui.ktx)
+
+	// Dependency injection
+	implementation(libs.hilt.android)
+	ksp(libs.hilt.android.compiler)
 
 	// Тестирование
 	testImplementation(libs.junit)

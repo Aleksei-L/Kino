@@ -6,4 +6,8 @@
 	</style>
 
 	<style name="Theme.Kino" parent="Base.Theme.Kino" />
+
+	<style name="ShapeAppearanceOverlay.App.CornerSize10Percent" parent="">
+		<item name="cornerSize">10%</item>
+	</style>
 </resources>

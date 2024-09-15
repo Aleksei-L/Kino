@@ -6,10 +6,11 @@ import com.example.kino.paging.MovieSetPagingSource
 import com.example.kino.util.Resource
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
+import javax.inject.Inject
 
-class MoviesRepo(
+class MoviesRepo @Inject constructor(
 	private val movieAPI: MovieAPI,
-	private val movieDao: MovieDao //TODO DI
+	private val movieDao: MovieDao
 ) {
 	suspend fun getMovieById(id: Int, needFreshData: Boolean): Movie? =
 		withContext(Dispatchers.IO) {

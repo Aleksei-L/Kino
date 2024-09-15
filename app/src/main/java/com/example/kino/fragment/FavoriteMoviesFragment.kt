@@ -6,24 +6,21 @@ import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.EditorInfo.IME_ACTION_SEARCH
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.ViewModelProvider
+import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.kino.R
 import com.example.kino.activity.MainActivity
 import com.example.kino.adapter.MoviesAdapter
 import com.example.kino.databinding.FragmentFavoriteMoviesBinding
-import com.example.kino.db.MovieDatabase
-import com.example.kino.repo.MovieAPI
-import com.example.kino.repo.MoviesRepo
-import com.example.kino.util.APIInstance
 import com.example.kino.util.ProgressBar
 import com.example.kino.viewmodel.FavoriteMoviesViewModel
-import com.example.kino.viewmodel.factory.FavoriteMoviesViewModelFactory
+import dagger.hilt.android.AndroidEntryPoint
 
+@AndroidEntryPoint
 class FavoriteMoviesFragment : Fragment(), ProgressBar {
+	private val vm: FavoriteMoviesViewModel by viewModels()
 	private lateinit var binding: FragmentFavoriteMoviesBinding
-	private lateinit var vm: FavoriteMoviesViewModel
 
 	override fun onCreateView(
 		inflater: LayoutInflater,
@@ -40,17 +37,6 @@ class FavoriteMoviesFragment : Fragment(), ProgressBar {
 
 	override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
 		super.onViewCreated(view, savedInstanceState)
-
-		//todo requireContext() создаёт ошибку при отсутсвии контекста, обработать в try-catch
-		vm = ViewModelProvider(
-			this,
-			FavoriteMoviesViewModelFactory(
-				MoviesRepo(
-					MovieAPI(APIInstance.httpClient),
-					MovieDatabase.getInstance(requireContext()).movieDao()
-				)
-			)
-		)[FavoriteMoviesViewModel::class.java]
 
 		binding.searchView.apply {
 			setupWithSearchBar(binding.searchBar)

@@ -9,10 +9,12 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import okhttp3.OkHttpClient
 import okhttp3.Request
+import javax.inject.Inject
 
-class MovieAPI(private val httpClient: OkHttpClient /* TODO DI */) {
-	private val moshi = Moshi.Builder().build()
-
+class MovieAPI @Inject constructor(
+	private val httpClient: OkHttpClient,
+	private val moshi: Moshi
+) {
 	suspend fun getMovieById(id: Int): Resource<Movie> = withContext(Dispatchers.IO) {
 		val request = Request.Builder()
 			.addHeader("X-API-KEY", API_KEY)
@@ -20,9 +22,8 @@ class MovieAPI(private val httpClient: OkHttpClient /* TODO DI */) {
 			.build()
 		try {
 			httpClient.newCall(request).execute().use { response ->
-				if (!response.isSuccessful) {
+				if (!response.isSuccessful)
 					return@withContext Resource.Error(response.message)
-				}
 
 				val json = response.body?.string()
 				val jsonAdapter = moshi.adapter(Movie::class.java)

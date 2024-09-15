@@ -6,8 +6,8 @@ import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.EditorInfo.IME_ACTION_SEARCH
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
-import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.fragment.findNavController
@@ -17,20 +17,17 @@ import com.example.kino.R
 import com.example.kino.activity.MainActivity
 import com.example.kino.adapter.PagingMoviesAdapter
 import com.example.kino.databinding.FragmentMoviesListBinding
-import com.example.kino.db.MovieDatabase
-import com.example.kino.repo.MovieAPI
-import com.example.kino.repo.MoviesRepo
-import com.example.kino.util.APIInstance
 import com.example.kino.util.ProgressBar
 import com.example.kino.viewmodel.MoviesListViewModel
-import com.example.kino.viewmodel.factory.MoviesListViewModelFactory
 import com.google.android.material.snackbar.Snackbar
+import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 
+@AndroidEntryPoint
 class MoviesListFragment : Fragment(), ProgressBar {
+	private val vm: MoviesListViewModel by viewModels()
 	private lateinit var binding: FragmentMoviesListBinding
-	private lateinit var vm: MoviesListViewModel
 
 	override fun onCreateView(
 		inflater: LayoutInflater,
@@ -47,16 +44,6 @@ class MoviesListFragment : Fragment(), ProgressBar {
 
 	override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
 		super.onViewCreated(view, savedInstanceState)
-
-		vm = ViewModelProvider(
-			this,
-			MoviesListViewModelFactory(
-				MoviesRepo(
-					MovieAPI(APIInstance.httpClient),
-					MovieDatabase.getInstance(requireContext()).movieDao()
-				)
-			)
-		)[MoviesListViewModel::class.java]
 
 		binding.searchView.apply {
 			setupWithSearchBar(binding.searchBar)

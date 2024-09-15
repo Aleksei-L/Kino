@@ -9,11 +9,14 @@ import androidx.paging.PagingData
 import androidx.paging.cachedIn
 import com.example.kino.data.Movie
 import com.example.kino.repo.MoviesRepo
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.cancel
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.launch
+import javax.inject.Inject
 
-class MoviesListViewModel(private val repo: MoviesRepo) : ViewModel() {
+@HiltViewModel
+class MoviesListViewModel @Inject constructor(private val repo: MoviesRepo) : ViewModel() {
 	val pageData: Flow<PagingData<Movie>> = Pager(
 		config = PagingConfig(pageSize = 20 /*TODO*/, enablePlaceholders = false),
 		pagingSourceFactory = { repo.getTopMovies() }
